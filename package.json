@@ -1,0 +1,26 @@
+{
+  "name": "br-helpers",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alisterlf/br-helpers.git"
+  },
+  "author": "Álister Lopes Ferreira",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/alisterlf/br-helpers/issues"
+  },
+  "homepage": "https://github.com/alisterlf/br-helpers#readme",
+  "devDependencies": {
+    "@types/jest": "^26.0.24",
+    "jest": "^27.0.6",
+    "ts-jest": "^27.0.4",
+    "typescript": "^4.3.5"
+  }
+}
