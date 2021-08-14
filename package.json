@@ -9,7 +9,8 @@
   ],
   "scripts": {
     "prebuild": "rimraf ./dist",
-    "build": "tsc",
+    "build": "tsc --project tsconfig.build.json",
+    "format": "prettier --write \"src/**/*.ts\"",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --collect-coverage",

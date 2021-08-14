@@ -33,7 +33,7 @@ export class CpfAndCnpj {
     firstDotPosition: number,
     secondDotPosition: number,
     slashPosition: number,
-    dashPosition: number
+    dashPosition: number,
   ): string {
     const cleanDigits = this.#getOnlyNumbers(digits);
     return cleanDigits
