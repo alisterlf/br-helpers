@@ -10,7 +10,10 @@
   "scripts": {
     "prebuild": "rimraf ./dist",
     "build": "tsc",
-    "test": "jest"
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --collect-coverage",
+    "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix"
   },
   "repository": {
     "type": "git",
@@ -24,7 +27,13 @@
   "homepage": "https://github.com/alisterlf/br-helpers#readme",
   "devDependencies": {
     "@types/jest": "^26.0.24",
+    "@typescript-eslint/eslint-plugin": "^4.29.1",
+    "@typescript-eslint/parser": "^4.29.1",
+    "eslint": "^7.32.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-prettier": "^3.4.0",
     "jest": "^27.0.6",
+    "prettier": "^2.3.2",
     "rimraf": "^3.0.2",
     "ts-jest": "^27.0.4",
     "tslib": "^2.3.1",
