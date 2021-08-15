@@ -1,1 +1,2 @@
-export * from './cpf-and-cnpj';
+export * from './cnpj';
+export * from './cpf';

@@ -1,7 +1,7 @@
 {
   "name": "br-helpers",
-  "version": "1.0.0",
-  "description": "",
+  "version": "0.0.1",
+  "description": "Um conjunto de ferramentas específicos do Brasil",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
@@ -21,10 +21,16 @@
     "url": "git+https://github.com/alisterlf/br-helpers.git"
   },
   "author": "Álister Lopes Ferreira",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/alisterlf/br-helpers/issues"
   },
+  "keywords": [
+    "cpf",
+    "cnpj",
+    "validator",
+    "formatter"
+  ],
   "homepage": "https://github.com/alisterlf/br-helpers#readme",
   "devDependencies": {
     "@types/jest": "^26.0.24",
