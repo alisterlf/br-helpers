@@ -43,7 +43,7 @@ describe('Cnpj', () => {
     expect(Cnpj.isValid('a1.775.044/0001-31')).toBeFalsy();
   });
 
-  it('Should return false to special caracters', () => {
+  it('Should return false to special characters', () => {
     expect(Cnpj.isValid('*1.775.044/0001-31')).toBeFalsy();
   });
 

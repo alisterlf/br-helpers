@@ -1,30 +1,26 @@
 export class Shared {
-  static format(digits: string, firstDotPosition: number, secondDotPosition: number, slashPosition: number, dashPosition: number): string {
+  static format(digits: string, symbols: Array<[number, string]>): string {
     const cleanDigits = this.getOnlyNumbers(digits);
     return cleanDigits.split('').reduce((acc, digit, idx) => {
       const result = `${acc}${digit}`;
-      switch (idx) {
-        case firstDotPosition:
-        case secondDotPosition:
-          return `${result}.`;
-        case slashPosition:
-          return `${result}/`;
-        case dashPosition:
-          return `${result}-`;
-        default:
-          return result;
+      if (!symbols[0]) {
+        return result;
       }
+      if (idx === symbols[0][0]) {
+        return `${result}${symbols.shift()[1]}`;
+      }
+      return result;
     }, '');
   }
 
-  static isValid(digits: string, correctDigitsLength: number): boolean {
+  static isCpfOrCnpjValid(digits: string, correctDigitsLength: number): boolean {
     const cleanDigits = this.getOnlyNumbers(digits);
     if (cleanDigits.length !== correctDigitsLength || this.isAllTheSameDigits(cleanDigits)) {
       return false;
     }
     const digitsWithoutChecker = cleanDigits.substring(0, correctDigitsLength - 2);
     const digitsChecker = cleanDigits.substring(correctDigitsLength - 2, correctDigitsLength);
-    const calculatedChecker = this.calcChecker(digitsWithoutChecker);
+    const calculatedChecker = this.calcCpfOrCnpjChecker(digitsWithoutChecker);
     return digitsChecker === calculatedChecker;
   }
 
@@ -36,7 +32,7 @@ export class Shared {
     return !digits.split('').some((digit) => digit !== digits[0]);
   }
 
-  static calcChecker(digits: string): string {
+  static calcCpfOrCnpjChecker(digits: string): string {
     const digitsLength = digits.length;
     const digitsLengthWithoutChecker = digitsLength < 11 ? 9 : 12;
     const weight = digitsLength < 11 ? digitsLength + 1 : digitsLength - 7;
@@ -50,7 +46,7 @@ export class Shared {
     const checker = sumDivisionRemainder < 2 ? 0 : 11 - sumDivisionRemainder;
 
     if (digitsLength === digitsLengthWithoutChecker) {
-      return this.calcChecker(`${digits}${checker}`);
+      return this.calcCpfOrCnpjChecker(`${digits}${checker}`);
     }
 
     return `${digits[digitsLength - 1]}${checker}`;

@@ -42,7 +42,7 @@ describe('Cpf', () => {
     expect(Cpf.isValid('a064.875.987-10')).toBeFalsy();
   });
 
-  it('Should return false to special caracters', () => {
+  it('Should return false to special characters', () => {
     expect(Cpf.isValid('0&.*00.00a-00')).toBeFalsy();
   });
 
@@ -50,19 +50,19 @@ describe('Cpf', () => {
     expect(Cpf.isValid('00000000000')).toBeFalsy();
   });
 
-  it('Verificador 1 = 0', () => {
+  it('Checker 1 = 0', () => {
     expect(Cpf.isValid('76381842202')).toBeTruthy();
   });
 
-  it('Verificador 1 > 1', () => {
+  it('Checker 1 > 1', () => {
     expect(Cpf.isValid('125.828.106-65')).toBeTruthy();
   });
 
-  it('Verificador 2 = 0', () => {
+  it('Checker 2 = 0', () => {
     expect(Cpf.isValid('433.787.588-30')).toBeTruthy();
   });
 
-  it('Verificador 2 > 1', () => {
+  it('Checker 2 > 1', () => {
     expect(Cpf.isValid('855.178.021-25')).toBeTruthy();
   });
 });
