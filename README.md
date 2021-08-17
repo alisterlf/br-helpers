@@ -8,7 +8,7 @@ npm install --save br-helpers
 
 ## Usage
 
-To use one of our utilities you just need to import the required class as in the example below:
+Para usar basta importar a classe e chamar o método, como o exemplo abaixo:
 
 ```javascript
 import { Cpf } from 'br-helpers';
