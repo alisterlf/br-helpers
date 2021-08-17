@@ -1,12 +1,12 @@
 #BR Helpers
 
-## Installation
+## Instalação
 
 ```bash
 npm install --save br-helpers
 ```
 
-## Usage
+## Uso
 
 Para usar basta importar a classe e chamar o método, como o exemplo abaixo:
 
