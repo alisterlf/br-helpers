@@ -2,16 +2,17 @@ import { Shared } from './shared';
 
 export class Cnpj {
   static isValid(cnpj: string): boolean {
+    const isValidValue = Shared.isValidValue(cnpj);
     const cpfLength = 14;
-    return Shared.isCpfOrCnpjValid(cnpj, cpfLength);
+    return isValidValue && Shared.isCpfOrCnpjValid(cnpj, cpfLength);
   }
 
   static format(cnpj: string): string {
     return Shared.format(cnpj, [
-      [1, '.'],
-      [4, '.'],
-      [7, '/'],
-      [11, '-'],
+      [2, '.'],
+      [5, '.'],
+      [8, '/'],
+      [12, '-'],
     ]);
   }
 }
