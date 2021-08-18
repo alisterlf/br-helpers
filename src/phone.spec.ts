@@ -22,12 +22,6 @@ describe('Phone', () => {
       });
     });
     describe('Should return true', () => {
-      it('when is a mobile phone with valid code state', () => {
-        expect(Phone.isValid('11979837935')).toBeTruthy();
-      });
-      it('when is a landline with mask with valid code state', () => {
-        expect(Phone.isValid('1179837935')).toBeTruthy();
-      });
       it('when is a mobile phone without mask', () => {
         expect(Phone.isValid('11979837935')).toBeTruthy();
       });
