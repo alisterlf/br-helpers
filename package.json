@@ -5,7 +5,9 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
-    "/dist"
+    "/dist",
+    "LICENSE",
+    "README.md"
   ],
   "scripts": {
     "prebuild": "rimraf ./dist",
@@ -28,6 +30,8 @@
   "keywords": [
     "cpf",
     "cnpj",
+    "cep",
+    "phone",
     "validator",
     "formatter"
   ],
