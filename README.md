@@ -24,7 +24,7 @@ Cpf.isValid('637.696.840-60'); // true
 import { Cep } from 'br-helpers';
 
 Cep.isValid('01311-200'); // true
-Cep.isFormat('01311200'); // 01311-200
+Cep.format('01311200'); // 01311-200
 ```
 
 #### CNPJ
@@ -33,7 +33,7 @@ Cep.isFormat('01311200'); // 01311-200
 import { Cnpj } from 'br-helpers';
 
 Cnpj.isValid('40010217000105'); // true
-Cnpj.isFormat('40010217000105'); // 40.010.217/0001-05
+Cnpj.format('40010217000105'); // 40.010.217/0001-05
 ```
 
 #### CPF
@@ -42,7 +42,7 @@ Cnpj.isFormat('40010217000105'); // 40.010.217/0001-05
 import { Cpf } from 'br-helpers';
 
 Cpf.isValid('637.696.840-60'); // true
-Cpf.isFormat('63769684060'); // 637.696.840-60
+Cpf.format('63769684060'); // 637.696.840-60
 ```
 
 #### Telefone fixo e celular
@@ -51,8 +51,8 @@ Cpf.isFormat('63769684060'); // 637.696.840-60
 import { Phone } from 'br-helpers';
 
 Phone.isValid('00979837935'); // false
-Phone.isFormat('11979837935'); // (11) 97983-7935
+Phone.format('11979837935'); // (11) 97983-7935
 
 Phone.isValid('(11) 4221-9784'); // true
-Phone.isFormat('1142219784'); // (11) 4221-9784
+Phone.format('1142219784'); // (11) 4221-9784
 ```

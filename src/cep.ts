@@ -1,12 +1,12 @@
-import { Shared } from './shared';
+import { format, getOnlyNumbersFromString, isValidValue } from './shared';
 export class Cep {
   static isValid(cep: string): boolean {
-    const isValidValue = Shared.isValidValue(cep);
+    const isValid = isValidValue(cep);
     const cepLength = 8;
-    return isValidValue && Shared.getOnlyNumbers(cep).length === cepLength;
+    return isValid && getOnlyNumbersFromString(cep).length === cepLength;
   }
 
   static format(cep: string): string {
-    return Shared.format(cep, [[5, '-']]);
+    return format(cep, [[5, '-']]);
   }
 }

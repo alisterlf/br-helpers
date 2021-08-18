@@ -1,14 +1,15 @@
-import { Shared } from './shared';
+import { CpfAndCnpj } from './cep-and-cnpj';
+import { format, isValidValue } from './shared';
 
 export class Cnpj {
   static isValid(cnpj: string): boolean {
-    const isValidValue = Shared.isValidValue(cnpj);
+    const isValid = isValidValue(cnpj);
     const cpfLength = 14;
-    return isValidValue && Shared.isCpfOrCnpjValid(cnpj, cpfLength);
+    return isValid && CpfAndCnpj.isValid(cnpj, cpfLength);
   }
 
   static format(cnpj: string): string {
-    return Shared.format(cnpj, [
+    return format(cnpj, [
       [2, '.'],
       [5, '.'],
       [8, '/'],
