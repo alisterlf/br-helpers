@@ -1,4 +1,8 @@
-#BR Helpers
+# BR Helpers
+[![Quality gate](https://sonarcloud.io/api/project_badges/quality_gate?project=alisterlf_br-helpers)](https://sonarcloud.io/dashboard?id=alisterlf_br-helpers)
+![MIT License](https://img.shields.io/static/v1.svg?label=📜%20License&message=MIT&color=informational)
+![npm](https://img.shields.io/npm/v/br-helpers?color=brightgreen)
+![npm bundle size](https://img.shields.io/bundlephobia/min/br-helpers)
 
 ## Instalação
 
