@@ -1,0 +1,54 @@
+{
+  "name": "br-helpers",
+  "version": "0.0.1",
+  "description": "Um conjunto de ferramentas específicos do Brasil",
+  "keywords": [
+    "cpf",
+    "cnpj",
+    "cep",
+    "phone",
+    "validator",
+    "formatter"
+  ],
+  "homepage": "https://github.com/alisterlf/br-helpers#readme",
+  "bugs": {
+    "url": "https://github.com/alisterlf/br-helpers/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alisterlf/br-helpers.git"
+  },
+  "license": "MIT",
+  "author": "Álister Lopes Ferreira",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "/dist",
+    "LICENSE",
+    "README.md"
+  ],
+  "scripts": {
+    "prebuild": "rimraf ./dist",
+    "prepublish": "npm run build",
+    "build": "tsc --project tsconfig.build.json",
+    "format": "prettier --write \"src/**/*.ts\"",
+    "test": "npm run test:coverage",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --collect-coverage",
+    "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix"
+  },
+  "devDependencies": {
+    "@types/jest": "^27.0.1",
+    "@typescript-eslint/eslint-plugin": "^4.29.2",
+    "@typescript-eslint/parser": "^4.29.2",
+    "eslint": "^7.32.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-prettier": "^3.4.0",
+    "jest": "^27.0.6",
+    "prettier": "^2.3.2",
+    "rimraf": "^3.0.2",
+    "ts-jest": "^27.0.5",
+    "tslib": "^2.3.1",
+    "typescript": "^4.3.5"
+  }
+}
