@@ -20,19 +20,25 @@ describe('Phone', () => {
       it('when is a phone number don´t match mobile ou landline length', () => {
         expect(Phone.isValid('079837935')).toBeFalsy();
       });
+      it('when is a phone fist number don´t match with a mobile first number', () => {
+        expect(Phone.isValid('11479837935')).toBeFalsy();
+      });
+      it('when is a phone fist number don´t match with a landline first number', () => {
+        expect(Phone.isValid('119837935')).toBeFalsy();
+      });
     });
     describe('Should return true', () => {
       it('when is a mobile phone without mask', () => {
         expect(Phone.isValid('11979837935')).toBeTruthy();
       });
       it('when is a landline phone without mask', () => {
-        expect(Phone.isValid('1179837935')).toBeTruthy();
+        expect(Phone.isValid('1149837935')).toBeTruthy();
       });
       it('when is a mobile phone with mask', () => {
         expect(Phone.isValid('(11) 97983-7935')).toBeTruthy();
       });
       it('when is a landline phone with mask', () => {
-        expect(Phone.isValid('(11) 7983-7935')).toBeTruthy();
+        expect(Phone.isValid('(11) 4983-7935')).toBeTruthy();
       });
     });
   });
