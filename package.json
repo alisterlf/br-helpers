@@ -1,14 +1,15 @@
 {
   "name": "br-helpers",
   "version": "0.1.0",
-  "description": "Um conjunto de ferramentas específicos do Brasil",
+  "description": "Um conjunto de ferramentas específicas do Brasil",
   "keywords": [
     "cpf",
     "cnpj",
     "cep",
     "phone",
     "validator",
-    "formatter"
+    "formatter",
+    "TypeScript"
   ],
   "homepage": "https://github.com/alisterlf/br-helpers#readme",
   "bugs": {
