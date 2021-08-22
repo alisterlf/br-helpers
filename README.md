@@ -1,5 +1,8 @@
 # BR Helpers
+
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=alisterlf_br-helpers&metric=alert_status)](https://sonarcloud.io/dashboard?id=alisterlf_br-helpers)
+[![Node.js CI status](https://github.com/alisterlf/br-helpers/workflows/Node.js%20CI/badge.svg)](https://github.com/alisterlf/br-helpers/actions)
+[![Codecov](https://codecov.io/gh/alisterlf/br-helpers/graph/badge.svg)](https://codecov.io/gh/alisterlf/br-helpers)
 ![MIT License](https://img.shields.io/static/v1.svg?label=📜%20License&message=MIT&color=informational)
 ![npm](https://img.shields.io/npm/v/br-helpers?color=brightgreen)
 ![npm bundle size](https://img.shields.io/bundlephobia/min/br-helpers)
