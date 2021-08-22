@@ -1,5 +1,8 @@
-name: Node.js CI
+name: Codecov
 on:
+  push:
+    branches:
+      - main
   pull_request:
     branches:
       - main
@@ -13,4 +16,7 @@ jobs:
           node-version: 14
           registry-url: https://registry.npmjs.org/
       - run: npm cit
-      - run: npm build
+      - uses: codecov/codecov-action@v2
+        with:
+          fail_ci_if_error: true
+          verbose: true
