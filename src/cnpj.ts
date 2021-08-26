@@ -1,4 +1,4 @@
-import { CpfAndCnpj } from './cep-and-cnpj';
+import { CpfAndCnpj } from './cpf-and-cnpj';
 import { format, isValidValue } from './shared';
 
 export class Cnpj {
