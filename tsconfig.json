@@ -1,12 +1,24 @@
 {
   "extends": "@tsconfig/node16/tsconfig.json",
   "compilerOptions": {
-    "skipLibCheck": false,
+    "allowSyntheticDefaultImports": true,
+    "baseUrl": "./",
     "composite": true,
     "declaration": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "incremental": true,
+    "isolatedModules": true,
+    "module": "ES2020",
     "moduleResolution": "node",
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitOverride": true,
+    "noImplicitReturns": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "outDir": "./dist",
     "removeComments": true,
-    "sourceMap": true,
-    "outDir": "./dist"
+    "skipLibCheck": false,
+    "sourceMap": true
   }
 }
