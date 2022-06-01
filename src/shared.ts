@@ -7,7 +7,7 @@ export function format(digits: string, symbols: Array<[position: number, symbol:
   return cleanDigits.split('').reduce((acc, digit, idx) => {
     let result = acc;
     if (symbols[0] && idx === symbols[0][0]) {
-      result = `${result}${symbols.shift()[1]}`;
+      result = `${result}${symbols.shift()?.[1]}`;
     }
     return `${result}${digit}`;
   }, '');
