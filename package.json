@@ -1,6 +1,6 @@
 {
   "name": "br-helpers",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Um conjunto de ferramentas específicas do Brasil",
   "keywords": [
     "cpf",
@@ -39,18 +39,17 @@
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix"
   },
   "devDependencies": {
-    "@tsconfig/node16": "^1.0.2",
-    "@types/jest": "^27.5.1",
-    "@typescript-eslint/eslint-plugin": "^5.27.0",
-    "@typescript-eslint/parser": "^5.27.0",
-    "eslint": "^8.16.0",
-    "eslint-config-prettier": "^8.5.0",
+    "@types/jest": "^27.0.3",
+    "@typescript-eslint/eslint-plugin": "^5.6.0",
+    "@typescript-eslint/parser": "^5.6.0",
+    "eslint": "^8.4.1",
+    "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^4.0.0",
-    "jest": "^28.1.0",
-    "prettier": "^2.6.2",
+    "jest": "^27.4.4",
+    "prettier": "^2.5.1",
     "rimraf": "^3.0.2",
-    "ts-jest": "^28.0.3",
-    "tslib": "^2.4.0",
-    "typescript": "^4.7.2"
+    "ts-jest": "^27.1.1",
+    "tslib": "^2.3.1",
+    "typescript": "^4.5.3"
   }
 }
