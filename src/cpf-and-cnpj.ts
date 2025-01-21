@@ -1,4 +1,4 @@
-import { getOnlyNumbersFromString } from './shared';
+import { getAlphanumericFromString } from './shared';
 
 export class CpfAndCnpj {
   static #isAllTheSameDigits(digits: string): boolean {
@@ -30,7 +30,7 @@ export class CpfAndCnpj {
     return len < 11 ? len + 1 : len - 7;
   }
   static isValid(digits: string, correctDigitsLength: number): boolean {
-    const cleanDigits = getOnlyNumbersFromString(digits);
+    const cleanDigits = getAlphanumericFromString(digits);
     if (cleanDigits.length !== correctDigitsLength || this.#isAllTheSameDigits(cleanDigits)) {
       return false;
     }
