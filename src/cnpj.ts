@@ -1,19 +1,17 @@
-import { CpfAndCnpj } from './cpf-and-cnpj';
-import { format, isValidValue } from './shared';
+import { CpfAndCnpj, DocumentAnalysis } from './cpf-and-cnpj';
+
+export type CnpjAnalysis = DocumentAnalysis;
 
 export class Cnpj {
-  static isValid(cnpj: string): boolean {
-    const isValid = isValidValue(cnpj);
-    const cpfLength = 14;
-    return isValid && CpfAndCnpj.isValid(cnpj, cpfLength);
+  static parse(cnpj: unknown): CnpjAnalysis {
+    return CpfAndCnpj.parse(cnpj, 'cnpj');
   }
 
-  static format(cnpj: string): string {
-    return format(cnpj, [
-      [2, '.'],
-      [5, '.'],
-      [8, '/'],
-      [12, '-'],
-    ]);
+  static isValid(cnpj: unknown): boolean {
+    return this.parse(cnpj).valid;
+  }
+
+  static format(cnpj: unknown): string {
+    return this.parse(cnpj).formatted;
   }
 }

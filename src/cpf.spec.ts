@@ -1,6 +1,17 @@
 import { Cpf } from './cpf';
 
 describe('Cpf', () => {
+  describe('parse', () => {
+    it('Should return normalized CPF analysis', () => {
+      expect(Cpf.parse('137.686.636-63')).toEqual({
+        raw: '137.686.636-63',
+        digits: '13768663663',
+        valid: true,
+        formatted: '137.686.636-63',
+      });
+    });
+  });
+
   describe('format', () => {
     it('Should return CPF with dots and dash', () => {
       expect(Cpf.format('13768663663')).toBe('137.686.636-63');

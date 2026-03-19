@@ -1,17 +1,45 @@
-export function getOnlyNumbersFromString(digits: string): string {
-  return String(digits).replace(/\D/g, '');
+export type MaskSlot = [position: number, symbol: string];
+
+export class Digits {
+  readonly value: string;
+
+  private constructor(value: string) {
+    this.value = value;
+  }
+
+  static from(input: unknown): Digits {
+    return new Digits(String(input).replace(/\D/g, ''));
+  }
+
+  get length(): number {
+    return this.value.length;
+  }
+
+  isEmpty(): boolean {
+    return this.length === 0;
+  }
+
+  mask(symbols: ReadonlyArray<MaskSlot>): string {
+    let symbolIndex = 0;
+    return this.value.split('').reduce((acc, digit, idx) => {
+      let result = acc;
+      while (symbols[symbolIndex] && idx === symbols[symbolIndex][0]) {
+        result = `${result}${symbols[symbolIndex][1]}`;
+        symbolIndex += 1;
+      }
+      return `${result}${digit}`;
+    }, '');
+  }
 }
 
-export function format(digits: string, symbols: Array<[position: number, symbol: string]>): string {
-  const cleanDigits = getOnlyNumbersFromString(digits);
-  return cleanDigits.split('').reduce((acc, digit, idx) => {
-    let result = acc;
-    if (symbols[0] && idx === symbols[0][0]) {
-      result = `${result}${symbols.shift()?.[1]}`;
-    }
-    return `${result}${digit}`;
-  }, '');
+export function getOnlyNumbersFromString(digits: unknown): string {
+  return Digits.from(digits).value;
 }
-export function isValidValue(value: string): boolean {
+
+export function format(digits: unknown, symbols: ReadonlyArray<MaskSlot>): string {
+  return Digits.from(digits).mask(symbols);
+}
+
+export function isValidValue(value: unknown): boolean {
   return !!value || typeof value === 'string';
 }

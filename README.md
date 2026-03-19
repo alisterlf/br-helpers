@@ -23,6 +23,8 @@ import { Cpf } from 'br-helpers';
 Cpf.isValid('637.696.840-60'); // true
 ```
 
+`Cpf`, `Cnpj` e `Phone` agora tambem expoem `parse`, que retorna os digitos normalizados, o valor formatado e o status de validacao.
+
 ### Formatação & Validação
 
 #### CEP
@@ -43,6 +45,14 @@ Cnpj.isValid('40010217000105'); // true
 Cnpj.format('40010217000105'); // 40.010.217/0001-05
 ```
 
+```javascript
+const cnpj = Cnpj.parse('40.010.217/0001-05');
+
+cnpj.valid; // true
+cnpj.digits; // 40010217000105
+cnpj.formatted; // 40.010.217/0001-05
+```
+
 #### CPF
 
 ```javascript
@@ -50,6 +60,14 @@ import { Cpf } from 'br-helpers';
 
 Cpf.isValid('637.696.840-60'); // true
 Cpf.format('63769684060'); // 637.696.840-60
+```
+
+```javascript
+const cpf = Cpf.parse('637.696.840-60');
+
+cpf.valid; // true
+cpf.digits; // 63769684060
+cpf.formatted; // 637.696.840-60
 ```
 
 #### Telefone fixo e celular
@@ -62,4 +80,14 @@ Phone.format('11979837935'); // (11) 97983-7935
 
 Phone.isValid('(11) 4221-9784'); // true
 Phone.format('1142219784'); // (11) 4221-9784
+```
+
+```javascript
+const phone = Phone.parse('(11) 97983-7935');
+
+phone.valid; // true
+phone.kind; // mobile
+phone.ddd; // 11
+phone.digits; // 11979837935
+phone.formatted; // (11) 97983-7935
 ```
