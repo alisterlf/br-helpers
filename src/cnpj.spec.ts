@@ -1,6 +1,29 @@
 import { Cnpj } from './cnpj';
 
 describe('Cnpj', () => {
+  describe('parse - custom codes', () => {
+    it('Should parse and validate custom CNPJ codes', () => {
+      const cases = [
+        ['2C.B1S.6Z0/0001-20', '2CB1S6Z0000120', true, '2C.B1S.6Z0/0001-20'],
+        ['V1.3N0.P6L/0001-69', 'V13N0P6L000169', true, 'V1.3N0.P6L/0001-69'],
+        ['3X.3ZY.B12/0001-10', '3X3ZYB12000110', true, '3X.3ZY.B12/0001-10'],
+        ['3X.3ZY.B12/A7E3-81', '3X3ZYB12A7E381', true, '3X.3ZY.B12/A7E3-81'],
+        ['2C.2GL.8D3/0001-26', '2C2GL8D3000126', true, '2C.2GL.8D3/0001-26'],
+      ];
+      for (const [raw, value, valid, formatted] of cases) {
+        expect(Cnpj.parse(raw)).toEqual({ raw, value, valid, formatted });
+      }
+    });
+  });
+
+  describe('isValid - custom codes', () => {
+    it('Should validate custom CNPJ codes', () => {
+      const validCodes = ['2C.B1S.6Z0/0001-20', 'V1.3N0.P6L/0001-69', '3X.3ZY.B12/0001-10', '3X.3ZY.B12/A7E3-81', '2C.2GL.8D3/0001-26'];
+      for (const code of validCodes) {
+        expect(Cnpj.isValid(code)).toBeTruthy();
+      }
+    });
+  });
   describe('parse', () => {
     it('Should return normalized CNPJ analysis', () => {
       expect(Cnpj.parse('26.149.878/0001-87')).toEqual({
