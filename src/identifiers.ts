@@ -43,7 +43,7 @@ export abstract class Identifier {
       return '';
     }
 
-    return String(input).toUpperCase();
+    return String(input);
   }
 }
 
@@ -57,7 +57,9 @@ export class AlphanumericIdentifier extends Identifier {
   }
 
   protected static normalizeValue(input: unknown): string {
-    return this.normalizeInput(input).replace(/[^A-Z0-9]/g, '');
+    return this.normalizeInput(input)
+      .toUpperCase()
+      .replace(/[^A-Z0-9]/g, '');
   }
 }
 
