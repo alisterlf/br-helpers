@@ -1,17 +1,18 @@
-import { CpfAndCnpj } from './cpf-and-cnpj';
-import { format, isValidValue } from './shared';
+import { BrazilianIdentifierEngine } from './brazilian-identifier-engine';
+import type { DocumentAnalysis } from './brazilian-identifier-engine';
+
+export type CpfAnalysis = DocumentAnalysis;
+
 export class Cpf {
-  static isValid(cpf: string): boolean {
-    const isValid = isValidValue(cpf);
-    const cpfLength = 11;
-    return isValid && CpfAndCnpj.isValid(cpf, cpfLength);
+  static parse(cpf: unknown): CpfAnalysis {
+    return BrazilianIdentifierEngine.parse(cpf, 'cpf');
   }
 
-  static format(cpf: string): string {
-    return format(cpf, [
-      [3, '.'],
-      [6, '.'],
-      [9, '-'],
-    ]);
+  static isValid(cpf: unknown): boolean {
+    return BrazilianIdentifierEngine.isValid(cpf, 'cpf');
+  }
+
+  static format(cpf: unknown): string {
+    return BrazilianIdentifierEngine.format(cpf, 'cpf');
   }
 }

@@ -7,6 +7,5 @@
     "incremental": true,
     "types": ["vitest/globals"]
   },
-  "include": ["src/**/*.ts"],
-  "exclude": ["coverage", "dist", "node_modules"]
+  "include": ["src/**/*.spec.ts"]
 }

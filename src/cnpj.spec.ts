@@ -1,9 +1,24 @@
 import { Cnpj } from './cnpj';
 
 describe('Cnpj', () => {
+  describe('parse', () => {
+    it('Should return normalized CNPJ analysis', () => {
+      expect(Cnpj.parse('26.149.878/0001-87')).toEqual({
+        raw: '26.149.878/0001-87',
+        digits: '26149878000187',
+        valid: true,
+        formatted: '26.149.878/0001-87',
+      });
+    });
+  });
+
   describe('format', () => {
     it('Should return CNPJ with dots, slash and dash', () => {
       expect(Cnpj.format('26149878000187')).toBe('26.149.878/0001-87');
+    });
+
+    it('Should format incomplete CNPJ input while typing', () => {
+      expect(Cnpj.format('2614987800018')).toBe('26.149.878/0001-8');
     });
   });
 

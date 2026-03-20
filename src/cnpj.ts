@@ -1,19 +1,18 @@
-import { CpfAndCnpj } from './cpf-and-cnpj';
-import { format, isValidValue } from './shared';
+import { BrazilianIdentifierEngine } from './brazilian-identifier-engine';
+import type { DocumentAnalysis } from './brazilian-identifier-engine';
+
+export type CnpjAnalysis = DocumentAnalysis;
 
 export class Cnpj {
-  static isValid(cnpj: string): boolean {
-    const isValid = isValidValue(cnpj);
-    const cpfLength = 14;
-    return isValid && CpfAndCnpj.isValid(cnpj, cpfLength);
+  static parse(cnpj: unknown): CnpjAnalysis {
+    return BrazilianIdentifierEngine.parse(cnpj, 'cnpj');
   }
 
-  static format(cnpj: string): string {
-    return format(cnpj, [
-      [2, '.'],
-      [5, '.'],
-      [8, '/'],
-      [12, '-'],
-    ]);
+  static isValid(cnpj: unknown): boolean {
+    return BrazilianIdentifierEngine.isValid(cnpj, 'cnpj');
+  }
+
+  static format(cnpj: unknown): string {
+    return BrazilianIdentifierEngine.format(cnpj, 'cnpj');
   }
 }

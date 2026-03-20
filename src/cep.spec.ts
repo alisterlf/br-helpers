@@ -19,23 +19,23 @@ describe('isValid', () => {
       expect(Cep.isValid('')).toBe(false);
     });
     it('when it is null', () => {
-      expect(Cep.isValid(null as any)).toBe(false);
+      expect(Cep.isValid(null as unknown as string)).toBe(false);
     });
     it('when it is undefined', () => {
-      expect(Cep.isValid(undefined as any)).toBe(false);
+      expect(Cep.isValid(undefined as unknown as string)).toBe(false);
     });
     it(`when length is greater than 8`, () => {
       expect(Cep.isValid('123456789')).toBe(false);
     });
     it('when is array', () => {
-      expect(Cep.isValid([] as any)).toBe(false);
+      expect(Cep.isValid([] as unknown as string)).toBe(false);
     });
     it('when is object', () => {
-      expect(Cep.isValid({} as any)).toBe(false);
+      expect(Cep.isValid({} as unknown as string)).toBe(false);
     });
     it('when is boolean', () => {
-      expect(Cep.isValid(true as any)).toBe(false);
-      expect(Cep.isValid(false as any)).toBe(false);
+      expect(Cep.isValid(true as unknown as string)).toBe(false);
+      expect(Cep.isValid(false as unknown as string)).toBe(false);
     });
   });
   describe('should return true', () => {

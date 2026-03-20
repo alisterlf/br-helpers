@@ -1,12 +1,14 @@
-import { format, getOnlyNumbersFromString, isValidValue } from './shared';
+import { Digits } from './digits';
 export class Cep {
+  static #formatMask: ReadonlyArray<[number, string]> = [[5, '-']];
+
   static isValid(cep: string): boolean {
-    const isValid = isValidValue(cep);
+    const hasValue = !!cep || typeof cep === 'string';
     const cepLength = 8;
-    return isValid && getOnlyNumbersFromString(cep).length === cepLength;
+    return hasValue && Digits.from(cep).length === cepLength;
   }
 
   static format(cep: string): string {
-    return format(cep, [[5, '-']]);
+    return Digits.from(cep).mask(this.#formatMask);
   }
 }

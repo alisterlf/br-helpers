@@ -1,12 +1,28 @@
 import { Phone } from './phone';
 
 describe('Phone', () => {
+  describe('parse', () => {
+    it('Should return parsed mobile phone analysis', () => {
+      expect(Phone.parse('(11) 97983-7935')).toEqual({
+        raw: '(11) 97983-7935',
+        digits: '11979837935',
+        ddd: '11',
+        kind: 'mobile',
+        valid: true,
+        formatted: '(11) 97983-7935',
+      });
+    });
+  });
+
   describe('format', () => {
     it('Should return a formatted phone number', () => {
       expect(Phone.format('1179837935')).toBe('(11) 7983-7935');
     });
     it('Should return a formatted mobile phone number', () => {
       expect(Phone.format('11979837935')).toBe('(11) 97983-7935');
+    });
+    it('Should keep a masked landline normalized', () => {
+      expect(Phone.format('(11) 4983-7935')).toBe('(11) 4983-7935');
     });
   });
   describe('isValid', () => {

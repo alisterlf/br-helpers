@@ -4,17 +4,22 @@ on:
   release:
     types: [created]
 
+permissions:
+  contents: read
+  id-token: write
+
 jobs:
   publish-npm:
+    name: Publish npm (Node 24)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: 14
+          node-version: 24
+          cache: npm
           registry-url: https://registry.npmjs.org/
-      - run: npm cit
-      - run: npm build
-      - run: npm publish
+      - run: npm ci
+      - run: npm publish --provenance
         env:
           NODE_AUTH_TOKEN: ${{secrets.npm_token}}
