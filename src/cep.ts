@@ -1,14 +1,14 @@
-import { Digits } from './digits';
+import { NumericIdentifier } from './digits';
 export class Cep {
   static #formatMask: ReadonlyArray<[number, string]> = [[5, '-']];
 
   static isValid(cep: string): boolean {
     const hasValue = !!cep || typeof cep === 'string';
     const cepLength = 8;
-    return hasValue && Digits.from(cep).length === cepLength;
+    return hasValue && NumericIdentifier.from(cep).length === cepLength;
   }
 
   static format(cep: string): string {
-    return Digits.from(cep).mask(this.#formatMask);
+    return NumericIdentifier.from(cep).applyMask(this.#formatMask);
   }
 }

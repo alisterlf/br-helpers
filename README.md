@@ -15,12 +15,12 @@ O pacote expõe helpers para:
 - CNPJ
 - CEP
 - Telefone fixo e celular
-- Normalização de dígitos com `Digits`
+- Normalização numérica e alfanumérica com `NumericIdentifier` e `AlphanumericIdentifier`
 
 ## Por que usar
 
 - Aceita entrada com ou sem máscara.
-- Remove caracteres não numéricos automaticamente.
+- Remove automaticamente caracteres de máscara e outros separadores.
 - Permite formatação progressiva durante a digitação.
 - Retorna análises prontas com `parse`, incluindo valor normalizado e status de validação.
 - Funciona bem em projetos JavaScript e TypeScript.
@@ -63,10 +63,11 @@ const { Cep, Cnpj, Cpf, Phone } = require('br-helpers');
 | Helper | Métodos | Descrição |
 | --- | --- | --- |
 | `Cpf` | `isValid`, `format`, `parse` | Validação, formatação progressiva e análise de CPF. |
-| `Cnpj` | `isValid`, `format`, `parse` | Validação, formatação progressiva e análise de CNPJ. |
+| `Cnpj` | `isValid`, `format`, `parse` | Validação, formatação progressiva e análise de CNPJ numérico e alfanumérico. |
 | `Cep` | `isValid`, `format` | Validação estrutural e formatação de CEP. |
 | `Phone` | `isValid`, `format`, `parse` | Validação de DDD, tipo da linha e máscara para telefone. |
-| `Digits` | `from` | Utilitário de baixo nível para extrair apenas dígitos e aplicar máscaras personalizadas. |
+| `AlphanumericIdentifier` | `from`, `applyMask` | Utilitário genérico para normalizar identificadores alfanuméricos e aplicar máscaras. |
+| `NumericIdentifier` | `from`, `applyMask` | Utilitário genérico para normalização estritamente numérica. |
 
 ## Exemplos
 
@@ -95,18 +96,21 @@ cpf.formatted; // '137.686.636-63'
 import { Cnpj } from 'br-helpers';
 
 Cnpj.isValid('26.149.878/0001-87'); // true
+Cnpj.isValid('12ABC34501DE35'); // true
 Cnpj.isValid('26.149.878/0001-88'); // false
 
 Cnpj.format('26149878000187'); // '26.149.878/0001-87'
-Cnpj.format('2614987800018'); // '26.149.878/0001-8'
+Cnpj.format('12abc34501de35'); // '12.ABC.345/01DE-35'
 
-const cnpj = Cnpj.parse('26.149.878/0001-87');
+const cnpj = Cnpj.parse('12abc34501de35');
 
-cnpj.raw; // '26.149.878/0001-87'
-cnpj.digits; // '26149878000187'
+cnpj.raw; // '12abc34501de35'
+cnpj.value; // '12ABC34501DE35'
 cnpj.valid; // true
-cnpj.formatted; // '26.149.878/0001-87'
+cnpj.formatted; // '12.ABC.345/01DE-35'
 ```
+
+O helper `Cnpj` aceita tanto o formato numérico legado quanto o novo formato alfanumérico. Letras minúsculas são normalizadas para maiúsculas.
 
 ### CEP
 
@@ -151,19 +155,41 @@ O campo `kind` pode retornar:
 - `'landline'` para telefone fixo
 - `null` quando o número ainda não permite identificação
 
-### Digits
+### AlphanumericIdentifier
 
-`Digits` é útil quando você quer reaproveitar a normalização de entrada para montar regras próprias.
+`AlphanumericIdentifier` é útil quando você quer reaproveitar a normalização alfanumérica e aplicar máscaras próprias.
 
 ```ts
-import { Digits } from 'br-helpers';
+import { AlphanumericIdentifier } from 'br-helpers';
 
-const digits = Digits.from('CPF: 137.686.636-63');
+const identifier = AlphanumericIdentifier.from('12abc345/01de-35');
+
+identifier.value; // '12ABC34501DE35'
+identifier.length; // 14
+identifier.isEmpty(); // false
+identifier.digits; // '123450135'
+identifier.applyMask([
+  [2, '.'],
+  [5, '.'],
+  [8, '/'],
+  [12, '-'],
+]); // '12.ABC.345/01DE-35'
+```
+
+### NumericIdentifier
+
+`NumericIdentifier` é útil quando você quer uma normalização estritamente numérica.
+
+```ts
+import { NumericIdentifier } from 'br-helpers';
+
+const digits = NumericIdentifier.from('CPF: 137.686.636-63');
 
 digits.value; // '13768663663'
 digits.length; // 11
 digits.isEmpty(); // false
-digits.mask([
+digits.digits; // '13768663663'
+digits.applyMask([
   [3, '.'],
   [6, '.'],
   [9, '-'],
@@ -183,12 +209,23 @@ Phone.format('119798'); // '(11) 9798'
 
 ## Formato de retorno do `parse`
 
-`Cpf.parse` e `Cnpj.parse` retornam:
+`Cpf.parse` retorna:
 
 ```ts
-type DocumentAnalysis = {
+type CpfAnalysis = {
   raw: unknown;
   digits: string;
+  valid: boolean;
+  formatted: string;
+};
+```
+
+`Cnpj.parse` retorna:
+
+```ts
+type CnpjAnalysis = {
+  raw: unknown;
+  value: string;
   valid: boolean;
   formatted: string;
 };

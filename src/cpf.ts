@@ -1,7 +1,7 @@
 import { BrazilianIdentifierEngine } from './brazilian-identifier-engine';
-import type { DocumentAnalysis } from './brazilian-identifier-engine';
+import type { NumericDocumentAnalysis } from './brazilian-identifier-engine';
 
-export type CpfAnalysis = DocumentAnalysis;
+export type CpfAnalysis = NumericDocumentAnalysis;
 
 export class Cpf {
   static parse(cpf: unknown): CpfAnalysis {

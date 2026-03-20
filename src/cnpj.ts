@@ -1,7 +1,7 @@
 import { BrazilianIdentifierEngine } from './brazilian-identifier-engine';
-import type { DocumentAnalysis } from './brazilian-identifier-engine';
+import type { AlphanumericDocumentAnalysis } from './brazilian-identifier-engine';
 
-export type CnpjAnalysis = DocumentAnalysis;
+export type CnpjAnalysis = AlphanumericDocumentAnalysis;
 
 export class Cnpj {
   static parse(cnpj: unknown): CnpjAnalysis {

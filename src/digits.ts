@@ -1,14 +1,10 @@
 export type MaskSlot = [position: number, symbol: string];
 
-export class Digits {
+export abstract class NormalizedIdentifier {
   readonly value: string;
 
-  private constructor(value: string) {
+  protected constructor(value: string) {
     this.value = value;
-  }
-
-  static from(input: unknown): Digits {
-    return new Digits(String(input).replace(/\D/g, ''));
   }
 
   get length(): number {
@@ -19,18 +15,62 @@ export class Digits {
     return this.value.length === 0;
   }
 
-  mask(symbols: ReadonlyArray<MaskSlot>): string {
-    let symbolIndex = 0;
-    let result = '';
+  get digits(): string {
+    return this.value.replace(/\D/g, '');
+  }
 
-    for (let idx = 0; idx < this.value.length; idx += 1) {
-      while (symbols[symbolIndex] && idx === symbols[symbolIndex][0]) {
-        result += symbols[symbolIndex][1];
-        symbolIndex += 1;
+  applyMask(slots: ReadonlyArray<MaskSlot>): string {
+    const valueLength = this.value.length;
+    let result = '';
+    let start = 0;
+
+    for (let idx = 0; idx < slots.length; idx += 1) {
+      const [position, symbol] = slots[idx];
+
+      if (position >= valueLength) {
+        break;
       }
-      result += this.value[idx];
+
+      result += this.value.slice(start, position) + symbol;
+      start = position;
     }
 
-    return result;
+    return result + this.value.slice(start);
+  }
+
+  protected static normalizeSource(input: unknown): string {
+    if (typeof input !== 'string' && typeof input !== 'number' && typeof input !== 'bigint') {
+      return '';
+    }
+
+    return String(input).toUpperCase();
+  }
+}
+
+export class AlphanumericIdentifier extends NormalizedIdentifier {
+  private constructor(value: string) {
+    super(value);
+  }
+
+  static from(input: unknown): AlphanumericIdentifier {
+    return new AlphanumericIdentifier(this.normalizeAlphanumericValue(input));
+  }
+
+  protected static normalizeAlphanumericValue(input: unknown): string {
+    return this.normalizeSource(input).replace(/[^A-Z0-9]/g, '');
+  }
+}
+
+export class NumericIdentifier extends NormalizedIdentifier {
+  private constructor(value: string) {
+    super(value);
+  }
+
+  static from(input: unknown): NumericIdentifier {
+    return new NumericIdentifier(this.normalizeNumericValue(input));
+  }
+
+  protected static normalizeNumericValue(input: unknown): string {
+    return this.normalizeSource(input).replace(/\D/g, '');
   }
 }
