@@ -140,26 +140,29 @@ export class BrazilianDocumentEngine {
       return false;
     }
 
-    const base = value.slice(0, baseLength);
-    return value.slice(baseLength) === this.#calculateCheckDigits(base, definition);
+    return this.#hasValidCheckDigits(value, definition);
   }
 
-  static #calculateCheckDigits<TKey extends AnalysisValueKey>(base: string, definition: DocumentDefinition<TKey>): string {
+  static #hasValidCheckDigits<TKey extends AnalysisValueKey>(value: string, definition: DocumentDefinition<TKey>): boolean {
     const { baseLength, checkDigitWeights } = definition;
     let firstSum = 0;
     let secondSum = 0;
 
     for (let idx = 0; idx < baseLength; idx += 1) {
-      const characterValue = this.#getChecksumValue(base, idx);
+      const characterValue = this.#getChecksumValue(value, idx);
       firstSum += characterValue * checkDigitWeights.first[idx];
       secondSum += characterValue * checkDigitWeights.second[idx];
     }
 
     const firstDigit = this.#getCheckDigit(firstSum);
+    if (this.#getChecksumValue(value, baseLength) !== firstDigit) {
+      return false;
+    }
+
     secondSum += firstDigit * checkDigitWeights.extraDigit;
     const secondDigit = this.#getCheckDigit(secondSum);
 
-    return `${firstDigit}${secondDigit}`;
+    return this.#getChecksumValue(value, baseLength + 1) === secondDigit;
   }
 
   static #getCheckDigit(sum: number): number {
