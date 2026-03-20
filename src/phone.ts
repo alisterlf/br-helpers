@@ -16,8 +16,6 @@ export class Phone {
     11, 12, 13, 14, 15, 16, 17, 18, 19, 21, 22, 24, 27, 28, 31, 32, 33, 34, 35, 37, 38, 41, 42, 43, 44, 45, 46, 47, 48, 49, 51, 53, 54, 55,
     61, 62, 63, 64, 65, 66, 67, 68, 69, 71, 73, 74, 75, 77, 79, 81, 82, 83, 84, 85, 86, 87, 88, 89, 91, 92, 93, 94, 95, 96, 97, 98, 99,
   ]);
-  static #mobileValidFirstNumber = new Set([6, 7, 8, 9]);
-  static #landlineValidFirstNumber = new Set([2, 3, 4, 5]);
 
   static #isValidLength(phone: string): boolean {
     return phone.length >= 10 && phone.length <= 11;
@@ -27,12 +25,18 @@ export class Phone {
     return phone.length >= 2 ? phone.substring(0, 2) : null;
   }
 
+  static #isDigitInRange(digit: string | undefined, start: string, end: string): boolean {
+    return digit !== undefined && digit >= start && digit <= end;
+  }
+
   static #getKind(phone: string): PhoneKind | null {
+    const firstNumber = phone[2];
+
     if (phone.length === 11) {
-      return this.#mobileValidFirstNumber.has(+phone[2]) ? 'mobile' : null;
+      return this.#isDigitInRange(firstNumber, '6', '9') ? 'mobile' : null;
     }
     if (phone.length === 10) {
-      return this.#landlineValidFirstNumber.has(+phone[2]) ? 'landline' : null;
+      return this.#isDigitInRange(firstNumber, '2', '5') ? 'landline' : null;
     }
     return null;
   }
