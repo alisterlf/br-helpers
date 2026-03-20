@@ -2,9 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
-This changelog starts with `v3.0.0`, the first release that documents breaking changes explicitly in-repo. Earlier versions are still available through git tags and GitHub releases.
+This changelog starts with `v3.0.1`, the first release that documents breaking changes explicitly in-repo. Earlier versions are still available through git tags and GitHub releases.
 
-## [3.0.0] - 2026-03-20
+## [3.0.1] - 2026-03-20
 
 ### Breaking changes
 
