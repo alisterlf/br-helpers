@@ -1,4 +1,4 @@
-import { Digits, MaskSlot } from './shared';
+import { Digits, MaskSlot } from './digits';
 
 type DocumentKind = 'cpf' | 'cnpj';
 
@@ -37,7 +37,7 @@ export type DocumentAnalysis = {
   formatted: string;
 };
 
-export class CpfAndCnpj {
+export class BrazilianIdentifierEngine {
   static parse(input: unknown, document: DocumentKind): DocumentAnalysis {
     const digits = Digits.from(input);
     const spec = this.#getSpec(document);
@@ -51,11 +51,13 @@ export class CpfAndCnpj {
   }
 
   static isValid(input: unknown, document: DocumentKind): boolean {
-    return this.parse(input, document).valid;
+    const digits = Digits.from(input);
+    return this.#isValidDigits(digits.value, this.#getSpec(document));
   }
 
   static format(input: unknown, document: DocumentKind): string {
-    return this.parse(input, document).formatted;
+    const digits = Digits.from(input);
+    return digits.mask(this.#getSpec(document).formatSlots);
   }
 
   static #getSpec(document: DocumentKind): DocumentSpec {
@@ -84,6 +86,7 @@ export class CpfAndCnpj {
       return acc + +digit * (weight + offsetValue - idx);
     }, 0);
   }
+
   static #getCheckerWeights(len: number): number {
     return len < 11 ? len + 1 : len - 7;
   }

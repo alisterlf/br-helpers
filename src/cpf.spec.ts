@@ -16,6 +16,10 @@ describe('Cpf', () => {
     it('Should return CPF with dots and dash', () => {
       expect(Cpf.format('13768663663')).toBe('137.686.636-63');
     });
+
+    it('Should format incomplete CPF input while typing', () => {
+      expect(Cpf.format('1376866366')).toBe('137.686.636-6');
+    });
   });
   it('Should return false to an empty string', () => {
     expect(Cpf.isValid('')).toBeFalsy();

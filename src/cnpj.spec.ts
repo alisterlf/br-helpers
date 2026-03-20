@@ -16,6 +16,10 @@ describe('Cnpj', () => {
     it('Should return CNPJ with dots, slash and dash', () => {
       expect(Cnpj.format('26149878000187')).toBe('26.149.878/0001-87');
     });
+
+    it('Should format incomplete CNPJ input while typing', () => {
+      expect(Cnpj.format('2614987800018')).toBe('26.149.878/0001-8');
+    });
   });
 
   it('Should return true to a valid CNPJ starting with 0', () => {

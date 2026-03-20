@@ -23,7 +23,8 @@ import { Cpf } from 'br-helpers';
 Cpf.isValid('637.696.840-60'); // true
 ```
 
-`Cpf`, `Cnpj` e `Phone` agora tambem expoem `parse`, que retorna os digitos normalizados, o valor formatado e o status de validacao.
+`Cpf`, `Cnpj` e `Phone` agora também expõem `parse`, que retorna os dígitos normalizados, o valor formatado e o status de validação.
+`Cpf.format`, `Cnpj.format` e `Phone.format` também podem ser usados enquanto o usuário digita, sem exigir um valor completo ou valido para aplicar a mascara.
 
 ### Formatação & Validação
 

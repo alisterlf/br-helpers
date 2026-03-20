@@ -1,8 +1,10 @@
 # RFC: Deepen phone handling around a parsed phone model
 
+Status: implemented in v2.
+
 ## Problem
 
-Phone handling is one cohesive domain, but the current API surfaces it as two flat statics.
+Before this refactor, phone handling was one cohesive domain, but the public API surfaced it as two flat statics.
 
 - The module owns normalization, DDD validation, phone-kind inference, and formatting
 - The DDD registry and numbering rules are private implementation details with no parsed representation at the boundary
@@ -16,7 +18,7 @@ This creates architectural friction:
 
 ## Proposed Interface
 
-Keep the simple helpers, but make `parse` the main boundary and let `isValid` and `format` delegate to it.
+Keep the simple helpers, make `parse` the rich analysis boundary, and keep `isValid` and `format` as dedicated fast paths over the same phone rules.
 
 ```ts
 type PhoneKind = 'mobile' | 'landline';
@@ -71,6 +73,6 @@ What complexity this hides internally:
 ## Implementation Recommendations
 
 - Model phone parsing as a single domain operation, not a loose set of validations plus formatting
-- Preserve the current easy entrypoints for common callers, but route them through `parse`
+- Preserve the current easy entrypoints for common callers, while keeping `isValid` and `format` as direct paths that do not pay for full analysis they do not need
 - Keep the numbering rules and DDD registry entirely behind the parsed phone boundary
 - Prefer additive migration so callers can adopt richer parsed behavior without breaking existing `Phone.isValid` and `Phone.format` use

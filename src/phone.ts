@@ -1,4 +1,4 @@
-import { Digits, MaskSlot, isValidValue } from './shared';
+import { Digits, MaskSlot } from './digits';
 
 export type PhoneKind = 'mobile' | 'landline';
 
@@ -50,27 +50,38 @@ export class Phone {
     ];
   }
 
+  static #hasValue(value: unknown): boolean {
+    return !!value || typeof value === 'string';
+  }
+
+  static #isValidPhone(value: unknown, digits: string, ddd: string | null, kind: PhoneKind | null): boolean {
+    return this.#hasValue(value) && this.#isValidLength(digits) && this.#isValidDdd(ddd) && kind !== null;
+  }
+
   static parse(phone: unknown): PhoneAnalysis {
     const digits = Digits.from(phone);
     const ddd = this.#getDdd(digits.value);
     const kind = this.#getKind(digits.value);
-    const valid = isValidValue(phone) && this.#isValidLength(digits.value) && this.#isValidDdd(ddd) && kind !== null;
 
     return {
       raw: phone,
       digits: digits.value,
       ddd,
       kind,
-      valid,
+      valid: this.#isValidPhone(phone, digits.value, ddd, kind),
       formatted: digits.mask(this.#getMaskSlots(digits.length)),
     };
   }
 
   static isValid(phone: unknown): boolean {
-    return this.parse(phone).valid;
+    const digits = Digits.from(phone);
+    const ddd = this.#getDdd(digits.value);
+    const kind = this.#getKind(digits.value);
+    return this.#isValidPhone(phone, digits.value, ddd, kind);
   }
 
   static format(phone: unknown): string {
-    return this.parse(phone).formatted;
+    const digits = Digits.from(phone);
+    return digits.mask(this.#getMaskSlots(digits.length));
   }
 }

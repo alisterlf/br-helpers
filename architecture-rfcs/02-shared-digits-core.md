@@ -1,12 +1,14 @@
 # RFC: Replace shallow shared helpers with a deep digits core
 
+Status: implemented in v2.
+
 ## Problem
 
-The package exports a shared utility layer that multiple public helpers coordinate with directly.
+Before this refactor, the package exported a shared utility layer that multiple public helpers coordinated with directly.
 
-- `getOnlyNumbersFromString`, `format`, and `isValidValue` are reused by nearly every domain helper
-- The helpers are generic, but correctness depends on each caller choosing the right ordering and mask positions
-- The shared formatter mutates the symbol list that callers pass in, which keeps behavior split across both sides of the boundary
+- `getOnlyNumbersFromString`, `format`, and `isValidValue` were reused by nearly every domain helper
+- The helpers were generic, but correctness depended on each caller choosing the right ordering and mask positions
+- The shallow shared API kept behavior split across both sides of the boundary
 
 This creates architectural friction:
 
@@ -16,7 +18,7 @@ This creates architectural friction:
 
 ## Proposed Interface
 
-Introduce a deep `Digits` value object as the internal core, then keep the current shared exports as thin deprecated adapters during migration.
+Introduce a deep `Digits` value object as the shared core and expose it directly as the package boundary for digit normalization and masking.
 
 ```ts
 type MaskSlot = [position: number, symbol: string];
@@ -30,10 +32,6 @@ class Digits {
   mask(slots: ReadonlyArray<MaskSlot>): string;
   isEmpty(): boolean;
 }
-
-function getOnlyNumbersFromString(input: unknown): string; // compatibility adapter
-function format(input: unknown, slots: ReadonlyArray<MaskSlot>): string; // compatibility adapter
-function isValidValue(input: unknown): boolean; // compatibility adapter
 ```
 
 Usage example:
@@ -60,7 +58,7 @@ What complexity this hides internally:
 
 - **Category**: In-process
 - The deepened module remains a pure value object with no I/O
-- Legacy exports remain as adapters until a later breaking release removes them
+- Domain modules depend directly on `Digits` instead of going through compatibility wrappers
 
 ## Testing Strategy
 
@@ -72,5 +70,5 @@ What complexity this hides internally:
 
 - Make the shared layer own normalization behavior completely instead of splitting it between helpers and callers
 - Stop mutating caller-provided mask data inside formatting behavior
-- Preserve package compatibility by keeping existing exports as wrappers while domain modules migrate to the deep core
-- Once migration is complete, reduce direct cross-module helper choreography and test the deep core at its boundary
+- Remove compatibility wrappers in v2 so the package exposes the deeper boundary directly
+- Reduce direct cross-module helper choreography and test the deep core at its boundary

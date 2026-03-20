@@ -1,17 +1,17 @@
-import { CpfAndCnpj, DocumentAnalysis } from './cpf-and-cnpj';
+import { BrazilianIdentifierEngine, DocumentAnalysis } from './brazilian-identifier-engine';
 
 export type CnpjAnalysis = DocumentAnalysis;
 
 export class Cnpj {
   static parse(cnpj: unknown): CnpjAnalysis {
-    return CpfAndCnpj.parse(cnpj, 'cnpj');
+    return BrazilianIdentifierEngine.parse(cnpj, 'cnpj');
   }
 
   static isValid(cnpj: unknown): boolean {
-    return this.parse(cnpj).valid;
+    return BrazilianIdentifierEngine.isValid(cnpj, 'cnpj');
   }
 
   static format(cnpj: unknown): string {
-    return this.parse(cnpj).formatted;
+    return BrazilianIdentifierEngine.format(cnpj, 'cnpj');
   }
 }

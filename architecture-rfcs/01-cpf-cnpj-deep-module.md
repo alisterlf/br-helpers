@@ -1,12 +1,14 @@
 # RFC: Deepen CPF and CNPJ into spec-backed document modules
 
+Status: implemented in v2.
+
 ## Problem
 
-The CPF and CNPJ flows are conceptually single features but their behavior is split across thin wrappers and a generic checker engine.
+Before this refactor, the CPF and CNPJ flows were conceptually single features but their behavior was split across thin wrappers and a generic checker engine.
 
-- `Cpf` and `Cnpj` currently own only length constants and mask layouts
-- The check-digit algorithm lives elsewhere and still depends on caller-supplied length
-- Input normalization and value-shape checks are delegated to generic shared helpers
+- `Cpf` and `Cnpj` owned only thin document-specific entrypoints
+- The check-digit algorithm lived elsewhere and depended on caller-supplied length metadata
+- Input normalization was delegated to generic shared helpers instead of a deeper identifier core
 
 This creates architectural friction:
 
@@ -16,7 +18,7 @@ This creates architectural friction:
 
 ## Proposed Interface
 
-Keep the current public ergonomics, but make `parse` the real boundary and let `isValid` and `format` become convenience wrappers over it.
+Keep the current public ergonomics, make `parse` the rich analysis boundary, and keep `isValid` and `format` as dedicated fast paths over the same internal engine.
 
 ```ts
 type DocumentAnalysis = {
@@ -58,7 +60,7 @@ What complexity this hides internally:
 - repeated-digit rejection
 - check-digit calculation
 - per-document length and mask rules
-- shared behavior captured once in a private document-spec engine
+- shared behavior captured once in a private `BrazilianIdentifierEngine`
 
 ## Dependency Strategy
 
@@ -76,5 +78,5 @@ What complexity this hides internally:
 
 - Make each public document type own its full behavior contract
 - Hide the checker algorithm behind a spec-driven internal core instead of exposing length as a caller concern
-- Add `parse` as the durable boundary for richer behavior while preserving existing static helpers
+- Add `parse` as the durable boundary for richer behavior while preserving dedicated `isValid` and `format` fast paths
 - Treat formatting, normalization, and validation as one concept per document type rather than three collaborating modules

@@ -31,15 +31,3 @@ export class Digits {
     }, '');
   }
 }
-
-export function getOnlyNumbersFromString(digits: unknown): string {
-  return Digits.from(digits).value;
-}
-
-export function format(digits: unknown, symbols: ReadonlyArray<MaskSlot>): string {
-  return Digits.from(digits).mask(symbols);
-}
-
-export function isValidValue(value: unknown): boolean {
-  return !!value || typeof value === 'string';
-}
