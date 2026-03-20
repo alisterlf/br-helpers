@@ -145,7 +145,7 @@ O campo `kind` pode retornar:
 
 ### Digits
 
-`Digits` é útil quando você quer reaproveitar a normalização de entrada para montar regras próprias.
+`Digits` eh util quando voce quer reaproveitar a normalizacao de entrada para montar regras proprias.
 
 ```ts
 import { Digits } from 'br-helpers';
