@@ -16,18 +16,21 @@ export class Digits {
   }
 
   isEmpty(): boolean {
-    return this.length === 0;
+    return this.value.length === 0;
   }
 
   mask(symbols: ReadonlyArray<MaskSlot>): string {
     let symbolIndex = 0;
-    return this.value.split('').reduce((acc, digit, idx) => {
-      let result = acc;
+    let result = '';
+
+    for (let idx = 0; idx < this.value.length; idx += 1) {
       while (symbols[symbolIndex] && idx === symbols[symbolIndex][0]) {
-        result = `${result}${symbols[symbolIndex][1]}`;
+        result += symbols[symbolIndex][1];
         symbolIndex += 1;
       }
-      return `${result}${digit}`;
-    }, '');
+      result += this.value[idx];
+    }
+
+    return result;
   }
 }

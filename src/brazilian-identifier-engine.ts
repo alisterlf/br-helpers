@@ -40,12 +40,13 @@ export type DocumentAnalysis = {
 export class BrazilianIdentifierEngine {
   static parse(input: unknown, document: DocumentKind): DocumentAnalysis {
     const digits = Digits.from(input);
+    const digitsValue = digits.value;
     const spec = this.#getSpec(document);
 
     return {
       raw: input,
-      digits: digits.value,
-      valid: this.#isValidDigits(digits.value, spec),
+      digits: digitsValue,
+      valid: this.#isValidDigits(digitsValue, spec),
       formatted: digits.mask(spec.formatSlots),
     };
   }
@@ -65,26 +66,42 @@ export class BrazilianIdentifierEngine {
   }
 
   static #isAllTheSameDigits(digits: string): boolean {
-    return digits.length > 0 && !digits.split('').some((digit) => digit !== digits[0]);
-  }
-
-  static #calcChecker(digits: string, spec: DocumentSpec): string {
-    const len = digits.length;
-    const sum = this.#sumDigits(digits, len);
-    const sumDivisionRemainder = sum % 11;
-    const checker = sumDivisionRemainder < 2 ? 0 : 11 - sumDivisionRemainder;
-    if (len === spec.digitsWithoutCheckerLength) {
-      return this.#calcChecker(`${digits}${checker}`, spec);
+    if (digits.length === 0) {
+      return false;
     }
-    return `${digits[len - 1]}${checker}`;
+
+    const firstDigit = digits[0];
+    for (let idx = 1; idx < digits.length; idx += 1) {
+      if (digits[idx] !== firstDigit) {
+        return false;
+      }
+    }
+
+    return true;
   }
 
-  static #sumDigits(digits: string, digitsLength: number): number {
-    const weight = this.#getCheckerWeights(digitsLength);
-    return digits.split('').reduce((acc, digit, idx) => {
+  static #getDigitAt(digits: string, idx: number): number {
+    return digits.charCodeAt(idx) - 48;
+  }
+
+  static #calcChecker(digits: string, digitsLength: number, extraDigit?: number): number {
+    const effectiveLength = extraDigit === undefined ? digitsLength : digitsLength + 1;
+    const weight = this.#getCheckerWeights(effectiveLength);
+    let sum = 0;
+
+    for (let idx = 0; idx < digitsLength; idx += 1) {
       const offsetValue = weight - idx >= 2 ? 0 : 8;
-      return acc + +digit * (weight + offsetValue - idx);
-    }, 0);
+      sum += this.#getDigitAt(digits, idx) * (weight + offsetValue - idx);
+    }
+
+    if (extraDigit !== undefined) {
+      const idx = digitsLength;
+      const offsetValue = weight - idx >= 2 ? 0 : 8;
+      sum += extraDigit * (weight + offsetValue - idx);
+    }
+
+    const remainder = sum % 11;
+    return remainder < 2 ? 0 : 11 - remainder;
   }
 
   static #getCheckerWeights(len: number): number {
@@ -95,9 +112,14 @@ export class BrazilianIdentifierEngine {
     if (cleanDigits.length !== spec.digitsLength || this.#isAllTheSameDigits(cleanDigits)) {
       return false;
     }
-    const digitsWithoutChecker = cleanDigits.substring(0, spec.digitsWithoutCheckerLength);
-    const digitsChecker = cleanDigits.substring(spec.digitsWithoutCheckerLength, spec.digitsLength);
-    const calculatedChecker = this.#calcChecker(digitsWithoutChecker, spec);
-    return digitsChecker === calculatedChecker;
+
+    const firstCheckerIndex = spec.digitsWithoutCheckerLength;
+    const firstChecker = this.#calcChecker(cleanDigits, firstCheckerIndex);
+    if (firstChecker !== this.#getDigitAt(cleanDigits, firstCheckerIndex)) {
+      return false;
+    }
+
+    const secondChecker = this.#calcChecker(cleanDigits, firstCheckerIndex, firstChecker);
+    return secondChecker === this.#getDigitAt(cleanDigits, firstCheckerIndex + 1);
   }
 }
