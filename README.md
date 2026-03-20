@@ -11,16 +11,16 @@ Biblioteca para validar, formatar, analisar e normalizar identificadores brasile
 
 ## O que o pacote oferece
 
-- `Cpf`: validacao, formatacao progressiva e analise completa.
-- `Cnpj`: validacao, formatacao e analise de CNPJ numerico e alfanumerico.
-- `Cep`: validacao estrutural e formatacao.
-- `Phone`: validacao de DDD, deteccao de linha fixa ou celular e `parse`.
-- `NumericIdentifier` e `AlphanumericIdentifier`: normalizacao reutilizavel para regras customizadas.
-- `Identifier` e `MaskSlot`: primitives para construir mascaras e abstrair novos helpers.
-- CLI `br-helpers`: comandos para terminal com saida em texto ou JSON.
-- Exportacoes raiz e por subpath para consumo pontual.
+- `Cpf`: validação, formatação progressiva e análise completa.
+- `Cnpj`: validação, formatação e análise de CNPJ numérico e alfanumérico.
+- `Cep`: validação estrutural e formatação.
+- `Phone`: validação de DDD, detecção de linha fixa ou celular e `parse`.
+- `NumericIdentifier` e `AlphanumericIdentifier`: normalização reutilizável para regras customizadas.
+- `Identifier` e `MaskSlot`: primitives para construir máscaras e abstrair novos helpers.
+- CLI `br-helpers`: comandos para terminal com saída em texto ou JSON.
+- Exportações raiz e por subpath para consumo pontual.
 
-## Instalacao
+## Instalação
 
 ```bash
 npm install br-helpers
@@ -32,17 +32,17 @@ Para instalar a CLI globalmente:
 npm install -g br-helpers
 ```
 
-Tambem funciona com `yarn add br-helpers` ou `pnpm add br-helpers`.
+Também funciona com `yarn add br-helpers` ou `pnpm add br-helpers`.
 
 ## Compatibilidade
 
 - Node.js: suporte oficial a `>= 20`.
-- Modulos: build CommonJS e ESM publicadas no mesmo pacote.
+- Módulos: build CommonJS e ESM publicadas no mesmo pacote.
 - Subpaths: `br-helpers/cpf`, `br-helpers/cnpj`, `br-helpers/cep`, `br-helpers/phone` e `br-helpers/identifiers`.
 - CI: cobertura validada em `Node.js 20`, `22` e `24`.
-- Polyfills: o pacote nao injeta polyfills automaticamente.
+- Polyfills: o pacote não injeta polyfills automaticamente.
 
-## Inicio rapido
+## Início rápido
 
 ```ts
 import { Cep, Cnpj, Cpf, Phone } from 'br-helpers';
@@ -55,7 +55,7 @@ Phone.parse('(11) 97983-7935').kind; // 'mobile'
 NumericIdentifier.from('CPF: 137.686.636-63').value; // '13768663663'
 ```
 
-Se voce preferir importar apenas um helper:
+Se você preferir importar apenas um helper:
 
 ```ts
 import { Cnpj } from 'br-helpers/cnpj';
@@ -73,15 +73,15 @@ const { NumericIdentifier } = require('br-helpers/identifiers');
 
 | Export | API principal | Quando usar |
 | --- | --- | --- |
-| `Cpf` | `parse`, `isValid`, `format` | CPF com ou sem mascara. |
-| `Cnpj` | `parse`, `isValid`, `format` | CNPJ numerico legado e alfanumerico. |
-| `Cep` | `isValid`, `format` | CEP com validacao estrutural de 8 digitos. |
-| `Phone` | `parse`, `isValid`, `format` | Telefone com DDD e deteccao de tipo da linha. |
-| `NumericIdentifier` | `from`, `value`, `digits`, `length`, `isEmpty`, `format` | Regras estritamente numericas. |
-| `AlphanumericIdentifier` | `from`, `value`, `digits`, `length`, `isEmpty`, `format` | Regras alfanumericas em maiusculo. |
-| `Identifier` | `value`, `digits`, `length`, `isEmpty`, `format` | Classe base abstrata para extensoes. |
-| `MaskSlot` | `[position, symbol]` | Tipo para descrever mascaras customizadas. |
-| `CpfAnalysis`, `CnpjAnalysis`, `PhoneAnalysis`, `PhoneKind` | Tipos exportados | Tipagem de retorno e composicao em TypeScript. |
+| `Cpf` | `parse`, `isValid`, `format` | CPF com ou sem máscara. |
+| `Cnpj` | `parse`, `isValid`, `format` | CNPJ numérico legado e alfanumérico. |
+| `Cep` | `isValid`, `format` | CEP com validação estrutural de 8 dígitos. |
+| `Phone` | `parse`, `isValid`, `format` | Telefone com DDD e detecção de tipo da linha. |
+| `NumericIdentifier` | `from`, `value`, `digits`, `length`, `isEmpty`, `format` | Regras estritamente numéricas. |
+| `AlphanumericIdentifier` | `from`, `value`, `digits`, `length`, `isEmpty`, `format` | Regras alfanuméricas em maiúsculo. |
+| `Identifier` | `value`, `digits`, `length`, `isEmpty`, `format` | Classe base abstrata para extensões. |
+| `MaskSlot` | `[position, symbol]` | Tipo para descrever máscaras customizadas. |
+| `CpfAnalysis`, `CnpjAnalysis`, `PhoneAnalysis`, `PhoneKind` | Tipos exportados | Tipagem de retorno e composição em TypeScript. |
 
 ## Exemplos
 
@@ -126,7 +126,7 @@ cnpj.valid; // true
 cnpj.formatted; // '12.ABC.345/01DE-35'
 ```
 
-`Cnpj` aceita o formato numerico legado e o novo formato alfanumerico. Letras minusculas sao normalizadas para maiusculas, e os dois ultimos caracteres continuam sendo digitos verificadores.
+`Cnpj` aceita o formato numérico legado e o novo formato alfanumérico. Letras minúsculas são normalizadas para maiúsculas, e os dois últimos caracteres continuam sendo dígitos verificadores.
 
 ### CEP
 
@@ -140,7 +140,7 @@ Cep.format('01311200'); // '01311-200'
 Cep.format('0131120'); // '01311-20'
 ```
 
-`Cep.isValid` valida apenas a estrutura do valor normalizado. Ele nao consulta existencia real do CEP.
+`Cep.isValid` valida apenas a estrutura do valor normalizado. Ele não consulta existência real do CEP.
 
 ### Telefone
 
@@ -165,7 +165,7 @@ phone.valid; // true
 phone.formatted; // '(11) 97983-7935'
 ```
 
-`phone.kind` pode retornar `'mobile'`, `'landline'` ou `null` enquanto o numero ainda nao permite identificacao.
+`phone.kind` pode retornar `'mobile'`, `'landline'` ou `null` enquanto o número ainda não permite identificação.
 
 ### NumericIdentifier
 
@@ -208,9 +208,9 @@ identifier.digits; // '123450135'
 identifier.format(cnpjMask); // '12.ABC.345/01DE-35'
 ```
 
-### Formatacao progressiva
+### Formatação progressiva
 
-Os metodos `format` podem ser usados durante a digitacao.
+Os métodos `format` podem ser usados durante a digitação.
 
 ```ts
 import { Cep, Cnpj, Cpf, Phone } from 'br-helpers';
@@ -223,7 +223,7 @@ Phone.format('119798'); // '(11) 9798'
 
 ## CLI
 
-O pacote publica o binario `br-helpers` com os comandos `cpf`, `cnpj`, `cep`, `phone` e `identifier`.
+O pacote publica o binário `br-helpers` com os comandos `cpf`, `cnpj`, `cep`, `phone` e `identifier`.
 
 ```bash
 npx br-helpers cpf 13768663663
@@ -233,14 +233,14 @@ npx br-helpers cep 01311200 --field formatted
 npx br-helpers identifier "CPF: 137.686.636-63"
 ```
 
-### Opcoes da CLI
+### Opções da CLI
 
-- `--field` ou `-f`: retorna apenas um campo especifico.
+- `--field` ou `-f`: retorna apenas um campo específico.
 - `--output` ou `-o`: alterna entre `text` e `json`.
-- `cpf`, `cnpj`, `cep` e `phone` encerram com codigo `0` quando o valor eh valido e `2` quando eh invalido.
-- `identifier` sempre encerra com codigo `0`.
+- `cpf`, `cnpj`, `cep` e `phone` encerram com código `0` quando o valor é válido e `2` quando é inválido.
+- `identifier` sempre encerra com código `0`.
 
-### Exemplo de saida JSON
+### Exemplo de saída JSON
 
 ```bash
 npx br-helpers cnpj 12abc34501de35 --output json
@@ -286,18 +286,18 @@ type MaskSlot = [position: number, symbol: string];
 
 ## Migrando do v2 para o v3
 
-- `Digits` foi substituido por `NumericIdentifier` e `AlphanumericIdentifier`.
+- `Digits` foi substituído por `NumericIdentifier` e `AlphanumericIdentifier`.
 - `Digits.from(value).mask(mask)` agora vira `NumericIdentifier.from(value).format(mask)`.
 - `import { Digits } from 'br-helpers/digits'` agora vira `import { NumericIdentifier, AlphanumericIdentifier } from 'br-helpers/identifiers'`.
 - `Cnpj.parse(...).digits` agora vira `Cnpj.parse(...).value`.
 - O `Cnpj` passa a aceitar e normalizar letras no corpo do documento.
 
-Os detalhes completos da mudanca estao em [CHANGELOG.md](./CHANGELOG.md).
+Os detalhes completos da mudança estão em [CHANGELOG.md](./CHANGELOG.md).
 
 ## TypeScript
 
-O pacote publica declaracoes de tipo junto com a build em `dist`, entao autocomplete e inferencia funcionam sem configuracao extra.
+O pacote publica declarações de tipo junto com a build em `dist`, então autocomplete e inferência funcionam sem configuração extra.
 
-## Licenca
+## Licença
 
 [MIT](./License.md)
