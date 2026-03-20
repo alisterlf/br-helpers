@@ -7,6 +7,15 @@ module.exports = [
   },
   ...tsEslintPlugin.configs['flat/recommended'],
   {
+    files: ['eslint.config.js', 'scripts/**/*.js'],
+    languageOptions: {
+      sourceType: 'commonjs',
+    },
+    rules: {
+      '@typescript-eslint/no-require-imports': 'off',
+    },
+  },
+  {
     files: ['**/*.ts'],
     rules: {},
   },

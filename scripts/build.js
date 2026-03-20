@@ -31,6 +31,7 @@ const sharedConfig = {
   entryPoints,
   entryNames: '[dir]/[name]',
   outbase: srcDir,
+  minify: true,
   sourcemap: true,
 };
 
