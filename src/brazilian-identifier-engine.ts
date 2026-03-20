@@ -67,10 +67,6 @@ export class BrazilianIdentifierEngine {
   }
 
   static #isAllTheSameDigits(digits: string): boolean {
-    if (digits.length === 0) {
-      return false;
-    }
-
     const firstDigit = digits[0];
     for (let idx = 1; idx < digits.length; idx += 1) {
       if (digits[idx] !== firstDigit) {

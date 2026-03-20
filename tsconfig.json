@@ -4,8 +4,9 @@
     "module": "esnext",
     "moduleResolution": "bundler",
     "noEmit": true,
-    "incremental": true
+    "incremental": true,
+    "types": ["vitest/globals"]
   },
   "include": ["src/**/*.ts"],
-  "exclude": ["src/**/*.spec.ts", "coverage", "dist", "node_modules"]
+  "exclude": ["coverage", "dist", "node_modules"]
 }

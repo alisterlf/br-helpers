@@ -17,4 +17,9 @@ describe('Digits', () => {
     ]);
     expect(Digits.from('13768663663').mask(slots)).toBe('137.686.636-63');
   });
+
+  it('should report when the normalized value is empty', () => {
+    expect(Digits.from('').isEmpty()).toBe(true);
+    expect(Digits.from('CPF: 137.686.636-63').isEmpty()).toBe(false);
+  });
 });
