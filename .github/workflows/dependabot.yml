@@ -1,22 +1,71 @@
 name: Dependabot Automerge
-on: pull_request
+
+on:
+  pull_request_target:
+    branches:
+      - main
+    types: [opened, reopened, synchronize]
+
+permissions:
+  contents: write
+  pull-requests: write
+
 jobs:
-  worker:
+  enable-automerge:
     runs-on: ubuntu-latest
-    if: github.actor == 'dependabot[bot]'
+    if: >
+      github.actor == 'dependabot[bot]' &&
+      github.event.pull_request.user.login == 'dependabot[bot]' &&
+      github.event.pull_request.base.ref == 'main'
     steps:
-      - uses: actions/github-script@v3
+      - uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8
         with:
-          script: |-
-            github.pulls.createReview({
-              owner: context.payload.repository.owner.login,
-              repo: context.payload.repository.name,
-              pull_number: context.payload.pull_request.number,
-              event: 'APPROVE'
-            })
-            github.pulls.merge({
-              owner: context.payload.repository.owner.login,
-              repo: context.payload.repository.name,
-              pull_number: context.payload.pull_request.number,
-              merge_method: 'squash'
-            })
+          script: |
+            const { owner, repo } = context.repo;
+            const pull_number = context.payload.pull_request.number;
+            const pullRequestId = context.payload.pull_request.node_id;
+
+            try {
+              await github.rest.pulls.createReview({
+                owner,
+                repo,
+                pull_number,
+                event: 'APPROVE',
+                body: 'Auto-approving Dependabot pull request after workflow validation.',
+              });
+              core.info('Submitted approval review.');
+            } catch (error) {
+              const message = error instanceof Error ? error.message : String(error);
+              if (!message.includes('Unprocessable Entity')) {
+                throw error;
+              }
+
+              core.info(`Skipping review creation: ${message}`);
+            }
+
+            const mutation = `
+              mutation EnableAutoMerge($pullRequestId: ID!) {
+                enablePullRequestAutoMerge(
+                  input: {
+                    pullRequestId: $pullRequestId
+                    mergeMethod: SQUASH
+                  }
+                ) {
+                  pullRequest {
+                    number
+                  }
+                }
+              }
+            `;
+
+            try {
+              await github.graphql(mutation, { pullRequestId });
+              core.info('Enabled auto-merge.');
+            } catch (error) {
+              const message = error instanceof Error ? error.message : String(error);
+              if (!message.includes('already enabled')) {
+                throw error;
+              }
+
+              core.info(`Auto-merge already enabled: ${message}`);
+            }
