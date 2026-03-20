@@ -1,4 +1,5 @@
-import { BrazilianIdentifierEngine, DocumentAnalysis } from './brazilian-identifier-engine';
+import { BrazilianIdentifierEngine } from './brazilian-identifier-engine';
+import type { DocumentAnalysis } from './brazilian-identifier-engine';
 
 export type CpfAnalysis = DocumentAnalysis;
 

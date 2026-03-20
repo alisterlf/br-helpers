@@ -1,4 +1,5 @@
-import { Digits, MaskSlot } from './digits';
+import { Digits } from './digits';
+import type { MaskSlot } from './digits';
 
 export type PhoneKind = 'mobile' | 'landline';
 

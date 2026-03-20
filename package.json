@@ -21,17 +21,84 @@
   },
   "license": "MIT",
   "author": "Álister Lopes Ferreira",
+  "type": "commonjs",
   "main": "dist/index.js",
+  "module": "dist/esm/index.mjs",
   "types": "dist/index.d.ts",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/esm/index.mjs",
+      "require": "./dist/index.js",
+      "default": "./dist/index.js"
+    },
+    "./cep": {
+      "types": "./dist/cep.d.ts",
+      "import": "./dist/esm/cep.mjs",
+      "require": "./dist/cep.js",
+      "default": "./dist/cep.js"
+    },
+    "./cnpj": {
+      "types": "./dist/cnpj.d.ts",
+      "import": "./dist/esm/cnpj.mjs",
+      "require": "./dist/cnpj.js",
+      "default": "./dist/cnpj.js"
+    },
+    "./cpf": {
+      "types": "./dist/cpf.d.ts",
+      "import": "./dist/esm/cpf.mjs",
+      "require": "./dist/cpf.js",
+      "default": "./dist/cpf.js"
+    },
+    "./digits": {
+      "types": "./dist/digits.d.ts",
+      "import": "./dist/esm/digits.mjs",
+      "require": "./dist/digits.js",
+      "default": "./dist/digits.js"
+    },
+    "./phone": {
+      "types": "./dist/phone.d.ts",
+      "import": "./dist/esm/phone.mjs",
+      "require": "./dist/phone.js",
+      "default": "./dist/phone.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "typesVersions": {
+    "*": {
+      "cep": [
+        "dist/cep.d.ts"
+      ],
+      "cnpj": [
+        "dist/cnpj.d.ts"
+      ],
+      "cpf": [
+        "dist/cpf.d.ts"
+      ],
+      "digits": [
+        "dist/digits.d.ts"
+      ],
+      "phone": [
+        "dist/phone.d.ts"
+      ]
+    }
+  },
   "files": [
-    "/dist",
+    "dist",
     "License.md",
     "README.md"
   ],
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
+  },
   "scripts": {
-    "prebuild": "rimraf ./dist",
-    "prepublishOnly": "npm run build",
-    "build": "tsc --project tsconfig.build.json",
+    "clean": "rimraf ./dist",
+    "build": "npm run clean && npm run build:js && npm run build:types",
+    "build:js": "node ./scripts/build.js",
+    "build:types": "tsc --project tsconfig.build.json",
+    "prepack": "npm run build",
+    "prepublishOnly": "npm run lint && npm test",
     "format": "prettier --write \"src/**/*.ts\"",
     "test": "npm run test:coverage",
     "test:watch": "vitest",
@@ -39,9 +106,10 @@
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix"
   },
   "devDependencies": {
-    "@vitest/coverage-v8": "^4.1.0",
     "@typescript-eslint/eslint-plugin": "^8.57.1",
     "@typescript-eslint/parser": "^8.57.1",
+    "@vitest/coverage-v8": "^4.1.0",
+    "esbuild": "^0.27.4",
     "eslint": "^10.0.3",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.5",

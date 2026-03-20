@@ -4,6 +4,10 @@ on:
   release:
     types: [created]
 
+permissions:
+  contents: read
+  id-token: write
+
 jobs:
   publish-npm:
     runs-on: ubuntu-latest
@@ -15,8 +19,6 @@ jobs:
           cache: npm
           registry-url: https://registry.npmjs.org/
       - run: npm ci
-      - run: npm test
-      - run: npm run build
-      - run: npm publish
+      - run: npm publish --provenance
         env:
           NODE_AUTH_TOKEN: ${{secrets.npm_token}}
