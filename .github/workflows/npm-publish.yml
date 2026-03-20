@@ -1,8 +1,9 @@
-name: Node.js Package
+name: Publish to npm
 
 on:
   release:
-    types: [created]
+    types: [published]
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -20,6 +21,14 @@ jobs:
           cache: npm
           registry-url: https://registry.npmjs.org/
       - run: npm ci
-      - run: npm publish --provenance
+      - name: Choose npm dist-tag
+        id: dist-tag
+        run: |
+          if [ "${{ github.event_name }}" = "release" ] && [ "${{ github.event.release.prerelease }}" = "true" ]; then
+            echo "value=next" >> "$GITHUB_OUTPUT"
+          else
+            echo "value=latest" >> "$GITHUB_OUTPUT"
+          fi
+      - run: npm publish --provenance --tag ${{ steps.dist-tag.outputs.value }}
         env:
-          NODE_AUTH_TOKEN: ${{secrets.npm_token}}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
