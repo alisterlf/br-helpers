@@ -1,6 +1,6 @@
 export type MaskSlot = [position: number, symbol: string];
 
-export abstract class NormalizedIdentifier {
+export abstract class Identifier {
   readonly value: string;
 
   protected constructor(value: string) {
@@ -19,13 +19,13 @@ export abstract class NormalizedIdentifier {
     return this.value.replace(/\D/g, '');
   }
 
-  applyMask(slots: ReadonlyArray<MaskSlot>): string {
+  format(maskSlots: ReadonlyArray<MaskSlot>): string {
     const valueLength = this.value.length;
     let result = '';
     let start = 0;
 
-    for (let idx = 0; idx < slots.length; idx += 1) {
-      const [position, symbol] = slots[idx];
+    for (let idx = 0; idx < maskSlots.length; idx += 1) {
+      const [position, symbol] = maskSlots[idx];
 
       if (position >= valueLength) {
         break;
@@ -38,7 +38,7 @@ export abstract class NormalizedIdentifier {
     return result + this.value.slice(start);
   }
 
-  protected static normalizeSource(input: unknown): string {
+  protected static normalizeInput(input: unknown): string {
     if (typeof input !== 'string' && typeof input !== 'number' && typeof input !== 'bigint') {
       return '';
     }
@@ -47,30 +47,30 @@ export abstract class NormalizedIdentifier {
   }
 }
 
-export class AlphanumericIdentifier extends NormalizedIdentifier {
+export class AlphanumericIdentifier extends Identifier {
   private constructor(value: string) {
     super(value);
   }
 
   static from(input: unknown): AlphanumericIdentifier {
-    return new AlphanumericIdentifier(this.normalizeAlphanumericValue(input));
+    return new AlphanumericIdentifier(this.normalizeValue(input));
   }
 
-  protected static normalizeAlphanumericValue(input: unknown): string {
-    return this.normalizeSource(input).replace(/[^A-Z0-9]/g, '');
+  protected static normalizeValue(input: unknown): string {
+    return this.normalizeInput(input).replace(/[^A-Z0-9]/g, '');
   }
 }
 
-export class NumericIdentifier extends NormalizedIdentifier {
+export class NumericIdentifier extends Identifier {
   private constructor(value: string) {
     super(value);
   }
 
   static from(input: unknown): NumericIdentifier {
-    return new NumericIdentifier(this.normalizeNumericValue(input));
+    return new NumericIdentifier(this.normalizeValue(input));
   }
 
-  protected static normalizeNumericValue(input: unknown): string {
-    return this.normalizeSource(input).replace(/\D/g, '');
+  protected static normalizeValue(input: unknown): string {
+    return this.normalizeInput(input).replace(/\D/g, '');
   }
 }

@@ -54,11 +54,11 @@
       "require": "./dist/cpf.js",
       "default": "./dist/cpf.js"
     },
-    "./digits": {
-      "types": "./dist/digits.d.ts",
-      "import": "./dist/esm/digits.mjs",
-      "require": "./dist/digits.js",
-      "default": "./dist/digits.js"
+    "./identifiers": {
+      "types": "./dist/identifiers.d.ts",
+      "import": "./dist/esm/identifiers.mjs",
+      "require": "./dist/identifiers.js",
+      "default": "./dist/identifiers.js"
     },
     "./phone": {
       "types": "./dist/phone.d.ts",
@@ -79,8 +79,8 @@
       "cpf": [
         "dist/cpf.d.ts"
       ],
-      "digits": [
-        "dist/digits.d.ts"
+      "identifiers": [
+        "dist/identifiers.d.ts"
       ],
       "phone": [
         "dist/phone.d.ts"

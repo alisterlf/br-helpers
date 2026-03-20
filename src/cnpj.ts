@@ -1,18 +1,18 @@
-import { BrazilianIdentifierEngine } from './brazilian-identifier-engine';
-import type { AlphanumericDocumentAnalysis } from './brazilian-identifier-engine';
+import { BrazilianDocumentEngine } from './brazilian-document-engine';
+import type { AlphanumericDocumentAnalysis } from './brazilian-document-engine';
 
 export type CnpjAnalysis = AlphanumericDocumentAnalysis;
 
 export class Cnpj {
   static parse(cnpj: unknown): CnpjAnalysis {
-    return BrazilianIdentifierEngine.parse(cnpj, 'cnpj');
+    return BrazilianDocumentEngine.parse(cnpj, 'cnpj');
   }
 
   static isValid(cnpj: unknown): boolean {
-    return BrazilianIdentifierEngine.isValid(cnpj, 'cnpj');
+    return BrazilianDocumentEngine.isValid(cnpj, 'cnpj');
   }
 
   static format(cnpj: unknown): string {
-    return BrazilianIdentifierEngine.format(cnpj, 'cnpj');
+    return BrazilianDocumentEngine.format(cnpj, 'cnpj');
   }
 }

@@ -1,4 +1,4 @@
-import { NumericIdentifier } from './digits';
+import { NumericIdentifier } from './identifiers';
 export class Cep {
   static #formatMask: ReadonlyArray<[number, string]> = [[5, '-']];
 
@@ -9,6 +9,6 @@ export class Cep {
   }
 
   static format(cep: string): string {
-    return NumericIdentifier.from(cep).applyMask(this.#formatMask);
+    return NumericIdentifier.from(cep).format(this.#formatMask);
   }
 }

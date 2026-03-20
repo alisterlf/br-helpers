@@ -1,5 +1,5 @@
-import { NumericIdentifier } from './digits';
-import type { MaskSlot } from './digits';
+import { NumericIdentifier } from './identifiers';
+import type { MaskSlot } from './identifiers';
 
 export type PhoneKind = 'mobile' | 'landline';
 
@@ -79,7 +79,7 @@ export class Phone {
       ddd,
       kind,
       valid: this.#isValidPhone(phone, digits.value, ddd, kind),
-      formatted: digits.applyMask(this.#getMaskSlots(digits.length)),
+      formatted: digits.format(this.#getMaskSlots(digits.length)),
     };
   }
 
@@ -92,6 +92,6 @@ export class Phone {
 
   static format(phone: unknown): string {
     const digits = NumericIdentifier.from(phone);
-    return digits.applyMask(this.#getMaskSlots(digits.length));
+    return digits.format(this.#getMaskSlots(digits.length));
   }
 }

@@ -66,8 +66,8 @@ const { Cep, Cnpj, Cpf, Phone } = require('br-helpers');
 | `Cnpj` | `isValid`, `format`, `parse` | Validação, formatação progressiva e análise de CNPJ numérico e alfanumérico. |
 | `Cep` | `isValid`, `format` | Validação estrutural e formatação de CEP. |
 | `Phone` | `isValid`, `format`, `parse` | Validação de DDD, tipo da linha e máscara para telefone. |
-| `AlphanumericIdentifier` | `from`, `applyMask` | Utilitário genérico para normalizar identificadores alfanuméricos e aplicar máscaras. |
-| `NumericIdentifier` | `from`, `applyMask` | Utilitário genérico para normalização estritamente numérica. |
+| `AlphanumericIdentifier` | `from`, `format` | Utilitário genérico para normalizar identificadores alfanuméricos e aplicar máscaras. |
+| `NumericIdentifier` | `from`, `format` | Utilitário genérico para normalização estritamente numérica. |
 
 ## Exemplos
 
@@ -168,7 +168,7 @@ identifier.value; // '12ABC34501DE35'
 identifier.length; // 14
 identifier.isEmpty(); // false
 identifier.digits; // '123450135'
-identifier.applyMask([
+identifier.format([
   [2, '.'],
   [5, '.'],
   [8, '/'],
@@ -183,13 +183,13 @@ identifier.applyMask([
 ```ts
 import { NumericIdentifier } from 'br-helpers';
 
-const digits = NumericIdentifier.from('CPF: 137.686.636-63');
+const numericIdentifier = NumericIdentifier.from('CPF: 137.686.636-63');
 
-digits.value; // '13768663663'
-digits.length; // 11
-digits.isEmpty(); // false
-digits.digits; // '13768663663'
-digits.applyMask([
+numericIdentifier.value; // '13768663663'
+numericIdentifier.length; // 11
+numericIdentifier.isEmpty(); // false
+numericIdentifier.digits; // '13768663663'
+numericIdentifier.format([
   [3, '.'],
   [6, '.'],
   [9, '-'],

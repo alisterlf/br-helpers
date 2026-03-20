@@ -1,18 +1,18 @@
-import { BrazilianIdentifierEngine } from './brazilian-identifier-engine';
-import type { NumericDocumentAnalysis } from './brazilian-identifier-engine';
+import { BrazilianDocumentEngine } from './brazilian-document-engine';
+import type { NumericDocumentAnalysis } from './brazilian-document-engine';
 
 export type CpfAnalysis = NumericDocumentAnalysis;
 
 export class Cpf {
   static parse(cpf: unknown): CpfAnalysis {
-    return BrazilianIdentifierEngine.parse(cpf, 'cpf');
+    return BrazilianDocumentEngine.parse(cpf, 'cpf');
   }
 
   static isValid(cpf: unknown): boolean {
-    return BrazilianIdentifierEngine.isValid(cpf, 'cpf');
+    return BrazilianDocumentEngine.isValid(cpf, 'cpf');
   }
 
   static format(cpf: unknown): string {
-    return BrazilianIdentifierEngine.format(cpf, 'cpf');
+    return BrazilianDocumentEngine.format(cpf, 'cpf');
   }
 }
