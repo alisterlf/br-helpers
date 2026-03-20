@@ -29,6 +29,4 @@ jobs:
           else
             echo "value=latest" >> "$GITHUB_OUTPUT"
           fi
-      - run: npm publish --provenance --tag ${{ steps.dist-tag.outputs.value }}
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - run: npm publish --provenance --access public --tag ${{ steps.dist-tag.outputs.value }}
