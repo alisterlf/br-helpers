@@ -1,6 +1,6 @@
 {
   "name": "br-helpers",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "description": "Helpers para validar, formatar e analisar CPF, CNPJ, CEP, telefone e outros identificadores brasileiros.",
   "keywords": [
     "cpf",
@@ -54,11 +54,11 @@
       "require": "./dist/cpf.js",
       "default": "./dist/cpf.js"
     },
-    "./digits": {
-      "types": "./dist/digits.d.ts",
-      "import": "./dist/esm/digits.mjs",
-      "require": "./dist/digits.js",
-      "default": "./dist/digits.js"
+    "./identifiers": {
+      "types": "./dist/identifiers.d.ts",
+      "import": "./dist/esm/identifiers.mjs",
+      "require": "./dist/identifiers.js",
+      "default": "./dist/identifiers.js"
     },
     "./phone": {
       "types": "./dist/phone.d.ts",
@@ -67,6 +67,9 @@
       "default": "./dist/phone.js"
     },
     "./package.json": "./package.json"
+  },
+  "bin": {
+    "br-helpers": "bin/br-helpers"
   },
   "typesVersions": {
     "*": {
@@ -79,8 +82,8 @@
       "cpf": [
         "dist/cpf.d.ts"
       ],
-      "digits": [
-        "dist/digits.d.ts"
+      "identifiers": [
+        "dist/identifiers.d.ts"
       ],
       "phone": [
         "dist/phone.d.ts"
@@ -89,6 +92,7 @@
   },
   "files": [
     "dist",
+    "CHANGELOG.md",
     "License.md",
     "README.md"
   ],
@@ -109,6 +113,7 @@
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix"
   },
   "devDependencies": {
+    "@types/node": "^25.5.0",
     "@typescript-eslint/eslint-plugin": "^8.57.1",
     "@typescript-eslint/parser": "^8.57.1",
     "@vitest/coverage-v8": "^4.1.0",
@@ -121,5 +126,8 @@
     "tslib": "^2.8.1",
     "typescript": "^5.9.3",
     "vitest": "^4.1.0"
+  },
+  "dependencies": {
+    "yargs": "^18.0.0"
   }
 }

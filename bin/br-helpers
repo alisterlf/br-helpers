@@ -1,0 +1,249 @@
+#!/usr/bin/env node
+/// <reference types="node" />
+
+/** @typedef {import('yargs').Argv<Record<string, unknown>>} CliBuilder */
+/** @typedef {import('yargs').ArgumentsCamelCase<{ value: string, field?: 'valid' | 'digits' | 'formatted', output: 'text' | 'json' }>} CpfCommandArgs */
+/** @typedef {import('yargs').ArgumentsCamelCase<{ value: string, field?: 'valid' | 'value' | 'formatted', output: 'text' | 'json' }>} CnpjCommandArgs */
+/** @typedef {import('yargs').ArgumentsCamelCase<{ value: string, field?: 'valid' | 'normalized' | 'formatted', output: 'text' | 'json' }>} CepCommandArgs */
+/** @typedef {import('yargs').ArgumentsCamelCase<{ value: string, field?: 'valid' | 'digits' | 'formatted', output: 'text' | 'json' }>} PhoneCommandArgs */
+/** @typedef {import('yargs').ArgumentsCamelCase<{ value: string }>} IdentifierCommandArgs */
+
+const yargs = require('yargs');
+const { hideBin } = require('yargs/helpers');
+const api = require('../dist/index.js');
+
+yargs(hideBin(process.argv))
+  .scriptName('br-helpers')
+  .usage('$0 <command> [options]')
+  .command(
+    'cpf <value>',
+    'Valida, formata e analisa CPF',
+    /** @param {CliBuilder} yargs */
+    (yargs) => {
+      yargs
+        .positional('value', {
+          describe: 'CPF para processar',
+          type: 'string',
+        })
+        .option('field', {
+          alias: 'f',
+          describe: 'Campo a retornar: valid, digits, formatted',
+          choices: ['valid', 'digits', 'formatted'],
+          default: undefined,
+        })
+        .option('output', {
+          alias: 'o',
+          describe: 'Formato de saída: text, json',
+          choices: ['text', 'json'],
+          default: 'text',
+        });
+    },
+    /** @param {CpfCommandArgs} argv */
+    (argv) => {
+      const { value, field, output } = argv;
+      const result = api.Cpf.parse(value);
+      let chalk;
+      try {
+        chalk = require('chalk');
+      } catch {
+        chalk = null;
+      }
+      const color = (val, ok) => (chalk ? (ok ? chalk.green(val) : chalk.red(val)) : val);
+      if (field) {
+        const val = result[field];
+        if (output === 'json') {
+          console.log(JSON.stringify({ [field]: val }, null, 2));
+        } else {
+          console.log(val);
+        }
+      } else if (output === 'json') {
+        console.log(JSON.stringify(result, null, 2));
+      } else {
+        console.log(`${chalk ? chalk.bold('Válido:') : 'Válido:'} ${color(result.valid, result.valid)}`);
+        console.log(`${chalk ? chalk.bold('Normalizado:') : 'Normalizado:'} ${result.digits}`);
+        console.log(`${chalk ? chalk.bold('Formatado:') : 'Formatado:'} ${result.formatted}`);
+      }
+      process.exit(result.valid ? 0 : 2);
+    },
+  )
+  .command(
+    'cnpj <value>',
+    'Valida, formata e analisa CNPJ',
+    /** @param {CliBuilder} yargs */
+    (yargs) => {
+      yargs
+        .positional('value', {
+          describe: 'CNPJ para processar',
+          type: 'string',
+        })
+        .option('field', {
+          alias: 'f',
+          describe: 'Campo a retornar: valid, value, formatted',
+          choices: ['valid', 'value', 'formatted'],
+          default: undefined,
+        })
+        .option('output', {
+          alias: 'o',
+          describe: 'Formato de saída: text, json',
+          choices: ['text', 'json'],
+          default: 'text',
+        });
+    },
+    /** @param {CnpjCommandArgs} argv */
+    (argv) => {
+      const { value, field, output } = argv;
+      const result = api.Cnpj.parse(value);
+      let chalk;
+      try {
+        chalk = require('chalk');
+      } catch {
+        chalk = null;
+      }
+      const color = (val, ok) => (chalk ? (ok ? chalk.green(val) : chalk.red(val)) : val);
+      if (field) {
+        const val = result[field];
+        if (output === 'json') {
+          console.log(JSON.stringify({ [field]: val }, null, 2));
+        } else {
+          console.log(val);
+        }
+      } else if (output === 'json') {
+        console.log(JSON.stringify(result, null, 2));
+      } else {
+        console.log(`${chalk ? chalk.bold('Válido:') : 'Válido:'} ${color(result.valid, result.valid)}`);
+        console.log(`${chalk ? chalk.bold('Normalizado:') : 'Normalizado:'} ${result.value}`);
+        console.log(`${chalk ? chalk.bold('Formatado:') : 'Formatado:'} ${result.formatted}`);
+      }
+      process.exit(result.valid ? 0 : 2);
+    },
+  )
+  .command(
+    'cep <value>',
+    'Valida e formata CEP',
+    /** @param {CliBuilder} yargs */
+    (yargs) => {
+      yargs
+        .positional('value', {
+          describe: 'CEP para processar',
+          type: 'string',
+        })
+        .option('field', {
+          alias: 'f',
+          describe: 'Campo a retornar: valid, normalized, formatted',
+          choices: ['valid', 'normalized', 'formatted'],
+          default: undefined,
+        })
+        .option('output', {
+          alias: 'o',
+          describe: 'Formato de saída: text, json',
+          choices: ['text', 'json'],
+          default: 'text',
+        });
+    },
+    /** @param {CepCommandArgs} argv */
+    (argv) => {
+      const { value, field, output } = argv;
+      const valid = api.Cep.isValid(value);
+      const formatted = api.Cep.format(value);
+      const normalized = api.NumericIdentifier.from(value).value;
+      let chalk;
+      try {
+        chalk = require('chalk');
+      } catch {
+        chalk = null;
+      }
+      const color = (val, ok) => (chalk ? (ok ? chalk.green(val) : chalk.red(val)) : val);
+      if (field) {
+        let val;
+        if (field === 'valid') val = valid;
+        else if (field === 'normalized') val = normalized;
+        else if (field === 'formatted') val = formatted;
+        if (output === 'json') {
+          console.log(JSON.stringify({ [field]: val }, null, 2));
+        } else {
+          console.log(val);
+        }
+      } else if (output === 'json') {
+        console.log(JSON.stringify({ valid, normalized, formatted }, null, 2));
+      } else {
+        console.log(`${chalk ? chalk.bold('Válido:') : 'Válido:'} ${color(valid, valid)}`);
+        console.log(`${chalk ? chalk.bold('Normalizado:') : 'Normalizado:'} ${normalized}`);
+        console.log(`${chalk ? chalk.bold('Formatado:') : 'Formatado:'} ${formatted}`);
+      }
+      process.exit(valid ? 0 : 2);
+    },
+  )
+  .command(
+    'phone <value>',
+    'Valida, formata e analisa telefone',
+    /** @param {CliBuilder} yargs */
+    (yargs) => {
+      yargs
+        .positional('value', {
+          describe: 'Telefone para processar',
+          type: 'string',
+        })
+        .option('field', {
+          alias: 'f',
+          describe: 'Campo a retornar: valid, digits, formatted',
+          choices: ['valid', 'digits', 'formatted'],
+          default: undefined,
+        })
+        .option('output', {
+          alias: 'o',
+          describe: 'Formato de saída: text, json',
+          choices: ['text', 'json'],
+          default: 'text',
+        });
+    },
+    /** @param {PhoneCommandArgs} argv */
+    (argv) => {
+      const { value, field, output } = argv;
+      const result = api.Phone.parse(value);
+      let chalk;
+      try {
+        chalk = require('chalk');
+      } catch {
+        chalk = null;
+      }
+      const color = (val, ok) => (chalk ? (ok ? chalk.green(val) : chalk.red(val)) : val);
+      if (field) {
+        const val = result[field];
+        if (output === 'json') {
+          console.log(JSON.stringify({ [field]: val }, null, 2));
+        } else {
+          console.log(val);
+        }
+      } else if (output === 'json') {
+        console.log(JSON.stringify(result, null, 2));
+      } else {
+        console.log(`${chalk ? chalk.bold('Válido:') : 'Válido:'} ${color(result.valid, result.valid)}`);
+        console.log(`${chalk ? chalk.bold('Normalizado:') : 'Normalizado:'} ${result.digits}`);
+        console.log(`${chalk ? chalk.bold('Formatado:') : 'Formatado:'} ${result.formatted}`);
+      }
+      process.exit(result.valid ? 0 : 2);
+    },
+  )
+  .command(
+    'identifier <value>',
+    'Normaliza identificador numérico ou alfanumérico',
+    /** @param {CliBuilder} yargs */
+    (yargs) => {
+      yargs.positional('value', {
+        describe: 'Identificador para normalizar',
+        type: 'string',
+      });
+    },
+    /** @param {IdentifierCommandArgs} argv */
+    (argv) => {
+      const { value } = argv;
+      const numeric = api.NumericIdentifier.from(value);
+      const alphanumeric = api.AlphanumericIdentifier.from(value);
+      console.log(JSON.stringify({ numeric: numeric.value, alphanumeric: alphanumeric.value }, null, 2));
+      process.exit(0);
+    },
+  )
+  .demandCommand(1, 'É necessário informar um comando.')
+  .help()
+  .alias('h', 'help')
+  .strict().argv;

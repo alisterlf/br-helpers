@@ -1,5 +1,5 @@
-import { Digits } from './digits';
-import type { MaskSlot } from './digits';
+import { NumericIdentifier } from './identifiers';
+import type { MaskSlot } from './identifiers';
 
 export type PhoneKind = 'mobile' | 'landline';
 
@@ -69,7 +69,7 @@ export class Phone {
   }
 
   static parse(phone: unknown): PhoneAnalysis {
-    const digits = Digits.from(phone);
+    const digits = NumericIdentifier.from(phone);
     const ddd = this.#getDdd(digits.value);
     const kind = this.#getKind(digits.value);
 
@@ -79,19 +79,19 @@ export class Phone {
       ddd,
       kind,
       valid: this.#isValidPhone(phone, digits.value, ddd, kind),
-      formatted: digits.mask(this.#getMaskSlots(digits.length)),
+      formatted: digits.format(this.#getMaskSlots(digits.length)),
     };
   }
 
   static isValid(phone: unknown): boolean {
-    const digits = Digits.from(phone);
+    const digits = NumericIdentifier.from(phone);
     const ddd = this.#getDdd(digits.value);
     const kind = this.#getKind(digits.value);
     return this.#isValidPhone(phone, digits.value, ddd, kind);
   }
 
   static format(phone: unknown): string {
-    const digits = Digits.from(phone);
-    return digits.mask(this.#getMaskSlots(digits.length));
+    const digits = NumericIdentifier.from(phone);
+    return digits.format(this.#getMaskSlots(digits.length));
   }
 }
