@@ -21,6 +21,9 @@
   },
   "license": "MIT",
   "author": "Álister Lopes Ferreira",
+  "engines": {
+    "node": ">=20"
+  },
   "type": "commonjs",
   "main": "dist/index.js",
   "module": "dist/esm/index.mjs",

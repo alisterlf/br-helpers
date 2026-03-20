@@ -21,9 +21,9 @@ O pacote expõe helpers para:
 
 - Aceita entrada com ou sem máscara.
 - Remove caracteres não numéricos automaticamente.
-- Permite formatar valores incompletos durante a digitação.
+- Permite formatação progressiva durante a digitação.
 - Retorna análises prontas com `parse`, incluindo valor normalizado e status de validação.
-- Funciona bem em TypeScript e JavaScript.
+- Funciona bem em projetos JavaScript e TypeScript.
 
 ## Instalação
 
@@ -32,6 +32,14 @@ npm install br-helpers
 ```
 
 Também funciona com `yarn add br-helpers` ou `pnpm add br-helpers`.
+
+## Compatibilidade
+
+- Node.js: suporte oficial a `Node.js >= 20`.
+- CommonJS: a build CJS usa target `node20`.
+- Browser: a build ESM usa target `ES2015`.
+- CI: a biblioteca eh validada em `Node.js 20`, `22` e `24`.
+- Polyfills: o pacote nao injeta polyfills automaticamente. Se o ambiente nao tiver APIs modernas como `Set`, a aplicação consumidora precisa fornecer os polyfills necessários.
 
 ## Início rápido
 
@@ -145,7 +153,7 @@ O campo `kind` pode retornar:
 
 ### Digits
 
-`Digits` eh util quando voce quer reaproveitar a normalizacao de entrada para montar regras proprias.
+`Digits` é útil quando você quer reaproveitar a normalização de entrada para montar regras próprias.
 
 ```ts
 import { Digits } from 'br-helpers';
@@ -201,7 +209,7 @@ type PhoneAnalysis = {
 
 ## TypeScript
 
-O pacote publica declarações de tipo junto com a build em `dist`, então o autocomplete e a inferência funcionam sem configuração extra em projetos TypeScript.
+O pacote publica declarações de tipo junto com a build em `dist`, então autocomplete e inferência funcionam sem configuração extra em projetos TypeScript.
 
 ## Licença
 

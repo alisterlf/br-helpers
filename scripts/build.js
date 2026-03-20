@@ -31,9 +31,7 @@ const sharedConfig = {
   entryPoints,
   entryNames: '[dir]/[name]',
   outbase: srcDir,
-  platform: 'neutral',
   sourcemap: true,
-  target: 'es2017',
 };
 
 async function main() {
@@ -42,6 +40,8 @@ async function main() {
       ...sharedConfig,
       bundle: false,
       format: 'cjs',
+      platform: 'node',
+      target: ['node20'],
       outdir: join(rootDir, 'dist'),
     }),
     esbuild.build({
@@ -49,7 +49,9 @@ async function main() {
       bundle: true,
       splitting: true,
       format: 'esm',
+      platform: 'neutral',
       packages: 'external',
+      target: ['es2015'],
       outdir: join(rootDir, 'dist', 'esm'),
       chunkNames: 'chunks/[name]-[hash]',
       outExtension: {

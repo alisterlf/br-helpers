@@ -5,12 +5,16 @@ on:
       - main
 jobs:
   build:
+    name: CI (Node ${{ matrix.node-version }})
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [20, 22, 24]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: ${{ matrix.node-version }}
           cache: npm
           registry-url: https://registry.npmjs.org/
       - run: npm ci
