@@ -134,6 +134,7 @@ jobs:
       - name: Create GitHub release
         shell: bash
         env:
+          GH_REPO: ${{ github.repository }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           TAG="${{ needs.release-check.outputs.tag }}"
