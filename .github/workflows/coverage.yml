@@ -6,18 +6,21 @@ on:
   pull_request:
     branches:
       - main
+
+permissions:
+  contents: read
+  id-token: write
+  pull-requests: read
+
 jobs:
   build:
     name: Coverage (Node 24)
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      id-token: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           fetch-depth: 0
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
         with:
           node-version: 24
           cache: npm
@@ -26,17 +29,21 @@ jobs:
       - run: npm test
       - name: SonarQube Scan
         if: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository }}
-        uses: SonarSource/sonarqube-scan-action@v7
+        uses: SonarSource/sonarqube-scan-action@a31c9398be7ace6bbfaf30c0bd5d415f843d45e9 # v7.0.0
+        with:
+          args: >
+            -Dsonar.qualitygate.wait=true
         env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      - uses: codecov/codecov-action@v5
+      - uses: codecov/codecov-action@4481f553995cc5011b158ce191746ac1a1d0f815 # v5.5.3
         if: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository }}
         with:
           files: ./coverage/lcov.info
           fail_ci_if_error: true
           use_oidc: true
           verbose: true
-      - uses: codecov/codecov-action@v5
+      - uses: codecov/codecov-action@4481f553995cc5011b158ce191746ac1a1d0f815 # v5.5.3
         if: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository }}
         with:
           files: ./coverage/lcov.info

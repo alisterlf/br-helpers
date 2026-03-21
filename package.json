@@ -97,13 +97,17 @@
     "README.md"
   ],
   "publishConfig": {
-    "registry": "https://registry.npmjs.org/"
+    "registry": "https://registry.npmjs.org/",
+    "access": "public",
+    "provenance": true
   },
   "scripts": {
     "clean": "rimraf ./dist",
     "build": "npm run clean && npm run build:js && npm run build:types",
     "build:js": "node ./scripts/build.js",
     "build:types": "tsc --project tsconfig.build.json",
+    "changeset": "changeset",
+    "version-packages": "changeset version",
     "prepack": "npm run build",
     "prepublishOnly": "npm run lint && npm test",
     "format": "prettier --write \"src/**/*.ts\"",
@@ -113,6 +117,7 @@
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix"
   },
   "devDependencies": {
+    "@changesets/cli": "^2.30.0",
     "@types/node": "^25.5.0",
     "@typescript-eslint/eslint-plugin": "^8.57.1",
     "@typescript-eslint/parser": "^8.57.1",

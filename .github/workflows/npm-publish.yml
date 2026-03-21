@@ -1,32 +1,144 @@
-name: Publish to npm
+name: Release
 
 on:
-  release:
-    types: [published]
-  workflow_dispatch:
+  push:
+    branches:
+      - main
 
-permissions:
-  contents: read
-  id-token: write
+concurrency: ${{ github.workflow }}-${{ github.ref }}
 
 jobs:
-  publish-npm:
-    name: Publish npm (Node 24)
+  version:
+    name: Release PR
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    outputs:
+      has_changesets: ${{ steps.changesets.outputs.hasChangesets }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
         with:
           node-version: 24
           cache: npm
           registry-url: https://registry.npmjs.org/
       - run: npm ci
-      - name: Choose npm dist-tag
-        id: dist-tag
+      - id: changesets
+        uses: changesets/action@6a0a831ff30acef54f2c6aa1cbbc1096b066edaf # v1.7.0
+        with:
+          version: npm run version-packages
+          commit: Version Packages
+          title: Version Packages
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  release-check:
+    name: Release Check
+    needs: version
+    if: needs.version.outputs.has_changesets == 'false'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      version: ${{ steps.release.outputs.version }}
+      tag: ${{ steps.release.outputs.tag }}
+      prerelease: ${{ steps.release.outputs.prerelease }}
+      should_publish: ${{ steps.release.outputs.should_publish }}
+      should_create_release: ${{ steps.release.outputs.should_create_release }}
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org/
+      - id: release
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          if [ "${{ github.event_name }}" = "release" ] && [ "${{ github.event.release.prerelease }}" = "true" ]; then
-            echo "value=next" >> "$GITHUB_OUTPUT"
+          VERSION=$(node -p "require('./package.json').version")
+          TAG="v$VERSION"
+          if [[ "$VERSION" == *-* ]]; then
+            PRERELEASE=true
           else
-            echo "value=latest" >> "$GITHUB_OUTPUT"
+            PRERELEASE=false
           fi
-      - run: npm publish --provenance --access public --tag ${{ steps.dist-tag.outputs.value }}
+
+          if npm view "br-helpers@$VERSION" version >/dev/null 2>&1; then
+            SHOULD_PUBLISH=false
+          else
+            SHOULD_PUBLISH=true
+          fi
+
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            SHOULD_CREATE_RELEASE=false
+          else
+            SHOULD_CREATE_RELEASE=true
+          fi
+
+          {
+            echo "version=$VERSION"
+            echo "tag=$TAG"
+            echo "prerelease=$PRERELEASE"
+            echo "should_publish=$SHOULD_PUBLISH"
+            echo "should_create_release=$SHOULD_CREATE_RELEASE"
+          } >> "$GITHUB_OUTPUT"
+
+  publish:
+    name: Publish npm
+    needs: release-check
+    if: needs.release-check.outputs.should_publish == 'true'
+    runs-on: ubuntu-latest
+    environment:
+      name: prd
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
+        with:
+          node-version: 24
+          cache: npm
+          registry-url: https://registry.npmjs.org/
+      - run: npm ci
+      - run: npm run build
+      - name: Publish to npm
+        shell: bash
+        run: |
+          VERSION="${{ needs.release-check.outputs.version }}"
+          if [[ "$VERSION" == *-* ]]; then
+            npx changeset publish --tag next
+          else
+            npx changeset publish
+          fi
+
+  github-release:
+    name: GitHub Release
+    needs:
+      - release-check
+      - publish
+    if: >
+      needs.release-check.outputs.should_create_release == 'true' &&
+      (needs.publish.result == 'success' || needs.publish.result == 'skipped')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Create GitHub release
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG="${{ needs.release-check.outputs.tag }}"
+          VERSION="${{ needs.release-check.outputs.version }}"
+          if [[ "${{ needs.release-check.outputs.prerelease }}" == "true" ]]; then
+            gh release create "$TAG" --target "$GITHUB_SHA" --title "$TAG" --generate-notes --prerelease
+          else
+            gh release create "$TAG" --target "$GITHUB_SHA" --title "$TAG" --generate-notes
+          fi

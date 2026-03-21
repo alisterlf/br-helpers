@@ -1,4 +1,10 @@
 name: CodeQL Configuration
 
 paths:
+  - './bin'
+  - './scripts'
   - './src'
+paths-ignore:
+  - './coverage'
+  - './dist'
+  - './node_modules'
