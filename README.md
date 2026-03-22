@@ -9,6 +9,61 @@
 
 Biblioteca para validar, formatar, analisar e normalizar identificadores brasileiros em projetos JavaScript e TypeScript.
 
+## Desempenho
+
+Na execucao publica de benchmark de 22/03/2026 no repo [br-helpers-benchmark](https://github.com/alisterlf/br-helpers-benchmark), o `br-helpers` ficou em 1o lugar nos cenarios mistos de CPF e CNPJ entre as bibliotecas populares comparadas no npm.
+
+Nas tabelas abaixo, cada celula mostra `ops/s (% do throughput do br-helpers naquele cenario)`. Assim fica mais facil comparar o valor absoluto e a distancia relativa para a baseline.
+
+### CPF
+
+| Biblioteca | Validos sem mascara | DV incorreto | Misto |
+| --- | ---: | ---: | ---: |
+| `br-helpers` | 14,071,031 (100%) | 9,983,228 (100%) | 12,534,156 (100%) |
+| `br-validations` | 10,723,861 (76%) | 8,589,885 (86%) | 10,423,544 (83%) |
+| `gerador-validador-cpf` | 7,447,902 (53%) | 5,786,769 (58%) | 7,163,119 (57%) |
+| `validar-cpf` | 5,974,215 (42%) | 4,875,385 (49%) | 6,696,503 (53%) |
+| `brazilian-values` | 4,173,274 (30%) | 3,697,350 (37%) | 4,865,178 (39%) |
+| `validations-br` | 4,065,900 (29%) | 3,507,960 (35%) | 4,655,205 (37%) |
+| `validation-br` | 6,180,852 (44%) | 3,212,046 (32%) | 4,209,947 (34%) |
+| `js-brasil` | 3,960,898 (28%) | 3,440,446 (34%) | 4,037,402 (32%) |
+| `@fnando/cpf` | 1,960,492 (14%) | 1,813,368 (18%) | 2,717,810 (22%) |
+| `cpf-cnpj-validator` | 1,918,325 (14%) | 1,768,985 (18%) | 2,622,318 (21%) |
+| `cpf` | 1,311,813 (9%) | 1,208,693 (12%) | 1,742,383 (14%) |
+
+```mermaid
+xychart-beta
+    title "CPF misto (% do throughput do br-helpers)"
+    x-axis ["br-helpers", "br-validations", "gerador-validador-cpf", "validar-cpf", "brazilian-values", "validations-br", "validation-br", "js-brasil", "@fnando/cpf", "cpf-cnpj-validator", "cpf"]
+    y-axis "Percentual" 0 --> 100
+    bar [100, 83, 57, 53, 39, 37, 34, 32, 22, 21, 14]
+```
+
+### CNPJ
+
+| Biblioteca | Validos sem mascara | DV incorreto | Misto |
+| --- | ---: | ---: | ---: |
+| `br-helpers` | 10,847,399 (100%) | 5,521,262 (100%) | 7,041,163 (100%) |
+| `br-validations` | 6,732,193 (62%) | 4,318,535 (78%) | 5,694,458 (81%) |
+| `js-brasil` | 5,102,666 (47%) | 3,048,297 (55%) | 3,960,542 (56%) |
+| `validations-br` | 4,140,787 (38%) | 2,775,958 (50%) | 3,560,248 (51%) |
+| `brazilian-values` | 3,745,655 (35%) | 2,600,348 (47%) | 3,325,153 (47%) |
+| `validation-br` | 1,034,955 (10%) | 771,381 (14%) | 1,026,318 (15%) |
+| `@fnando/cnpj` | 498,416 (5%) | 449,309 (8%) | 660,309 (9%) |
+| `cpf-cnpj-validator` | 449,454 (4%) | 418,080 (8%) | 607,077 (9%) |
+
+```mermaid
+xychart-beta
+    title "CNPJ misto (% do throughput do br-helpers)"
+    x-axis ["br-helpers", "br-validations", "js-brasil", "validations-br", "brazilian-values", "validation-br", "@fnando/cnpj", "cpf-cnpj-validator"]
+    y-axis "Percentual" 0 --> 100
+    bar [100, 81, 56, 51, 47, 15, 9, 9]
+```
+
+O benchmark tambem mede cenarios com documentos validos sem mascara, com mascara, digitos verificadores incorretos, digitos repetidos e valores incompletos. Nem todas as bibliotecas comparadas suportam CNPJ alfanumerico, mas o `br-helpers` cobre CPF, CNPJ numerico e CNPJ alfanumerico no mesmo pacote.
+
+Os numeros absolutos variam por maquina, versao do Node.js e dataset, entao o ideal e consultar o repositorio de benchmark para ver a metodologia, as tabelas completas e as bibliotecas incluidas na comparacao.
+
 ## O que o pacote oferece
 
 - `Cpf`: validação, formatação progressiva e análise completa.
