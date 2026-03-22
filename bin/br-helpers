@@ -1,249 +1,367 @@
 #!/usr/bin/env node
 /// <reference types="node" />
 
-/** @typedef {import('yargs').Argv<Record<string, unknown>>} CliBuilder */
-/** @typedef {import('yargs').ArgumentsCamelCase<{ value: string, field?: 'valid' | 'digits' | 'formatted', output: 'text' | 'json' }>} CpfCommandArgs */
-/** @typedef {import('yargs').ArgumentsCamelCase<{ value: string, field?: 'valid' | 'value' | 'formatted', output: 'text' | 'json' }>} CnpjCommandArgs */
-/** @typedef {import('yargs').ArgumentsCamelCase<{ value: string, field?: 'valid' | 'normalized' | 'formatted', output: 'text' | 'json' }>} CepCommandArgs */
-/** @typedef {import('yargs').ArgumentsCamelCase<{ value: string, field?: 'valid' | 'digits' | 'formatted', output: 'text' | 'json' }>} PhoneCommandArgs */
-/** @typedef {import('yargs').ArgumentsCamelCase<{ value: string }>} IdentifierCommandArgs */
-
-const yargs = require('yargs');
-const { hideBin } = require('yargs/helpers');
 const api = require('../dist/index.js');
 
-yargs(hideBin(process.argv))
-  .scriptName('br-helpers')
-  .usage('$0 <command> [options]')
-  .command(
-    'cpf <value>',
-    'Valida, formata e analisa CPF',
-    /** @param {CliBuilder} yargs */
-    (yargs) => {
-      yargs
-        .positional('value', {
-          describe: 'CPF para processar',
-          type: 'string',
-        })
-        .option('field', {
-          alias: 'f',
-          describe: 'Campo a retornar: valid, digits, formatted',
-          choices: ['valid', 'digits', 'formatted'],
-          default: undefined,
-        })
-        .option('output', {
-          alias: 'o',
-          describe: 'Formato de saída: text, json',
-          choices: ['text', 'json'],
-          default: 'text',
-        });
+const commandDefinitions = {
+  cpf: {
+    usage: 'cpf <value>',
+    description: 'Valida, formata e analisa CPF',
+    valueDescription: 'CPF para processar',
+    fields: ['valid', 'digits', 'formatted'],
+    supportsOutput: true,
+    analyze(value) {
+      return api.Cpf.parse(value);
     },
-    /** @param {CpfCommandArgs} argv */
-    (argv) => {
-      const { value, field, output } = argv;
-      const result = api.Cpf.parse(value);
-      let chalk;
-      try {
-        chalk = require('chalk');
-      } catch {
-        chalk = null;
-      }
-      const color = (val, ok) => (chalk ? (ok ? chalk.green(val) : chalk.red(val)) : val);
-      if (field) {
-        const val = result[field];
-        if (output === 'json') {
-          console.log(JSON.stringify({ [field]: val }, null, 2));
-        } else {
-          console.log(val);
-        }
-      } else if (output === 'json') {
-        console.log(JSON.stringify(result, null, 2));
-      } else {
-        console.log(`${chalk ? chalk.bold('Válido:') : 'Válido:'} ${color(result.valid, result.valid)}`);
-        console.log(`${chalk ? chalk.bold('Normalizado:') : 'Normalizado:'} ${result.digits}`);
-        console.log(`${chalk ? chalk.bold('Formatado:') : 'Formatado:'} ${result.formatted}`);
-      }
-      process.exit(result.valid ? 0 : 2);
+    normalizedKey: 'digits',
+  },
+  cnpj: {
+    usage: 'cnpj <value>',
+    description: 'Valida, formata e analisa CNPJ',
+    valueDescription: 'CNPJ para processar',
+    fields: ['valid', 'value', 'formatted'],
+    supportsOutput: true,
+    analyze(value) {
+      return api.Cnpj.parse(value);
     },
-  )
-  .command(
-    'cnpj <value>',
-    'Valida, formata e analisa CNPJ',
-    /** @param {CliBuilder} yargs */
-    (yargs) => {
-      yargs
-        .positional('value', {
-          describe: 'CNPJ para processar',
-          type: 'string',
-        })
-        .option('field', {
-          alias: 'f',
-          describe: 'Campo a retornar: valid, value, formatted',
-          choices: ['valid', 'value', 'formatted'],
-          default: undefined,
-        })
-        .option('output', {
-          alias: 'o',
-          describe: 'Formato de saída: text, json',
-          choices: ['text', 'json'],
-          default: 'text',
-        });
+    normalizedKey: 'value',
+  },
+  cep: {
+    usage: 'cep <value>',
+    description: 'Valida e formata CEP',
+    valueDescription: 'CEP para processar',
+    fields: ['valid', 'normalized', 'formatted'],
+    supportsOutput: true,
+    analyze(value) {
+      return {
+        valid: api.Cep.isValid(value),
+        normalized: api.NumericIdentifier.from(value).value,
+        formatted: api.Cep.format(value),
+      };
     },
-    /** @param {CnpjCommandArgs} argv */
-    (argv) => {
-      const { value, field, output } = argv;
-      const result = api.Cnpj.parse(value);
-      let chalk;
-      try {
-        chalk = require('chalk');
-      } catch {
-        chalk = null;
-      }
-      const color = (val, ok) => (chalk ? (ok ? chalk.green(val) : chalk.red(val)) : val);
-      if (field) {
-        const val = result[field];
-        if (output === 'json') {
-          console.log(JSON.stringify({ [field]: val }, null, 2));
-        } else {
-          console.log(val);
-        }
-      } else if (output === 'json') {
-        console.log(JSON.stringify(result, null, 2));
-      } else {
-        console.log(`${chalk ? chalk.bold('Válido:') : 'Válido:'} ${color(result.valid, result.valid)}`);
-        console.log(`${chalk ? chalk.bold('Normalizado:') : 'Normalizado:'} ${result.value}`);
-        console.log(`${chalk ? chalk.bold('Formatado:') : 'Formatado:'} ${result.formatted}`);
-      }
-      process.exit(result.valid ? 0 : 2);
+    normalizedKey: 'normalized',
+  },
+  phone: {
+    usage: 'phone <value>',
+    description: 'Valida, formata e analisa telefone',
+    valueDescription: 'Telefone para processar',
+    fields: ['valid', 'digits', 'formatted'],
+    supportsOutput: true,
+    analyze(value) {
+      return api.Phone.parse(value);
     },
-  )
-  .command(
-    'cep <value>',
-    'Valida e formata CEP',
-    /** @param {CliBuilder} yargs */
-    (yargs) => {
-      yargs
-        .positional('value', {
-          describe: 'CEP para processar',
-          type: 'string',
-        })
-        .option('field', {
-          alias: 'f',
-          describe: 'Campo a retornar: valid, normalized, formatted',
-          choices: ['valid', 'normalized', 'formatted'],
-          default: undefined,
-        })
-        .option('output', {
-          alias: 'o',
-          describe: 'Formato de saída: text, json',
-          choices: ['text', 'json'],
-          default: 'text',
-        });
-    },
-    /** @param {CepCommandArgs} argv */
-    (argv) => {
-      const { value, field, output } = argv;
-      const valid = api.Cep.isValid(value);
-      const formatted = api.Cep.format(value);
-      const normalized = api.NumericIdentifier.from(value).value;
-      let chalk;
-      try {
-        chalk = require('chalk');
-      } catch {
-        chalk = null;
-      }
-      const color = (val, ok) => (chalk ? (ok ? chalk.green(val) : chalk.red(val)) : val);
-      if (field) {
-        let val;
-        if (field === 'valid') val = valid;
-        else if (field === 'normalized') val = normalized;
-        else if (field === 'formatted') val = formatted;
-        if (output === 'json') {
-          console.log(JSON.stringify({ [field]: val }, null, 2));
-        } else {
-          console.log(val);
-        }
-      } else if (output === 'json') {
-        console.log(JSON.stringify({ valid, normalized, formatted }, null, 2));
-      } else {
-        console.log(`${chalk ? chalk.bold('Válido:') : 'Válido:'} ${color(valid, valid)}`);
-        console.log(`${chalk ? chalk.bold('Normalizado:') : 'Normalizado:'} ${normalized}`);
-        console.log(`${chalk ? chalk.bold('Formatado:') : 'Formatado:'} ${formatted}`);
-      }
-      process.exit(valid ? 0 : 2);
-    },
-  )
-  .command(
-    'phone <value>',
-    'Valida, formata e analisa telefone',
-    /** @param {CliBuilder} yargs */
-    (yargs) => {
-      yargs
-        .positional('value', {
-          describe: 'Telefone para processar',
-          type: 'string',
-        })
-        .option('field', {
-          alias: 'f',
-          describe: 'Campo a retornar: valid, digits, formatted',
-          choices: ['valid', 'digits', 'formatted'],
-          default: undefined,
-        })
-        .option('output', {
-          alias: 'o',
-          describe: 'Formato de saída: text, json',
-          choices: ['text', 'json'],
-          default: 'text',
-        });
-    },
-    /** @param {PhoneCommandArgs} argv */
-    (argv) => {
-      const { value, field, output } = argv;
-      const result = api.Phone.parse(value);
-      let chalk;
-      try {
-        chalk = require('chalk');
-      } catch {
-        chalk = null;
-      }
-      const color = (val, ok) => (chalk ? (ok ? chalk.green(val) : chalk.red(val)) : val);
-      if (field) {
-        const val = result[field];
-        if (output === 'json') {
-          console.log(JSON.stringify({ [field]: val }, null, 2));
-        } else {
-          console.log(val);
-        }
-      } else if (output === 'json') {
-        console.log(JSON.stringify(result, null, 2));
-      } else {
-        console.log(`${chalk ? chalk.bold('Válido:') : 'Válido:'} ${color(result.valid, result.valid)}`);
-        console.log(`${chalk ? chalk.bold('Normalizado:') : 'Normalizado:'} ${result.digits}`);
-        console.log(`${chalk ? chalk.bold('Formatado:') : 'Formatado:'} ${result.formatted}`);
-      }
-      process.exit(result.valid ? 0 : 2);
-    },
-  )
-  .command(
-    'identifier <value>',
-    'Normaliza identificador numérico ou alfanumérico',
-    /** @param {CliBuilder} yargs */
-    (yargs) => {
-      yargs.positional('value', {
-        describe: 'Identificador para normalizar',
-        type: 'string',
-      });
-    },
-    /** @param {IdentifierCommandArgs} argv */
-    (argv) => {
-      const { value } = argv;
+    normalizedKey: 'digits',
+  },
+  identifier: {
+    usage: 'identifier <value>',
+    description: 'Normaliza identificador numerico ou alfanumerico',
+    valueDescription: 'Identificador para normalizar',
+    fields: [],
+    supportsOutput: false,
+    execute(value) {
       const numeric = api.NumericIdentifier.from(value);
       const alphanumeric = api.AlphanumericIdentifier.from(value);
       console.log(JSON.stringify({ numeric: numeric.value, alphanumeric: alphanumeric.value }, null, 2));
-      process.exit(0);
+      return 0;
     },
-  )
-  .demandCommand(1, 'É necessário informar um comando.')
-  .help()
-  .alias('h', 'help')
-  .strict().argv;
+  },
+};
+
+const commandNames = Object.keys(commandDefinitions);
+const helpAliases = new Set(['-h', '--help']);
+const shortOptionNames = {
+  f: 'field',
+  o: 'output',
+};
+
+function loadChalk() {
+  try {
+    return require('chalk');
+  } catch {
+    return null;
+  }
+}
+
+function makeStyleHelpers() {
+  const chalk = loadChalk();
+
+  return {
+    bold(value) {
+      return chalk ? chalk.bold(value) : value;
+    },
+    color(value, valid) {
+      return chalk ? (valid ? chalk.green(value) : chalk.red(value)) : value;
+    },
+  };
+}
+
+function renderGlobalHelp() {
+  const lines = ['br-helpers <command> [options]', '', 'Commands:'];
+
+  for (const commandName of commandNames) {
+    const definition = commandDefinitions[commandName];
+    lines.push(`  ${definition.usage.padEnd(20)} ${definition.description}`);
+  }
+
+  lines.push('', 'Run "br-helpers <command> --help" for command options.', '', 'Options:', '  -h, --help          Mostra a ajuda');
+
+  return lines.join('\n');
+}
+
+function renderCommandHelp(commandName) {
+  const definition = commandDefinitions[commandName];
+  const lines = [
+    `Uso: br-helpers ${definition.usage} [options]`,
+    '',
+    definition.description,
+    '',
+    'Argumentos:',
+    `  value               ${definition.valueDescription}`,
+  ];
+
+  if (definition.fields.length > 0 || definition.supportsOutput) {
+    lines.push('', 'Opcoes:');
+
+    if (definition.fields.length > 0) {
+      lines.push(`  -f, --field <field>  Campo a retornar: ${definition.fields.join(', ')}`);
+    }
+
+    if (definition.supportsOutput) {
+      lines.push('  -o, --output <fmt>   Formato de saida: text, json');
+    }
+
+    lines.push('  -h, --help           Mostra a ajuda');
+  } else {
+    lines.push('', 'Opcoes:', '  -h, --help           Mostra a ajuda');
+  }
+
+  return lines.join('\n');
+}
+
+function fail(message, helpText) {
+  console.error(message);
+  if (helpText) {
+    console.error('');
+    console.error(helpText);
+  }
+  return 1;
+}
+
+function parseOptionToken(token, args, index) {
+  if (token.startsWith('--')) {
+    const equalsIndex = token.indexOf('=');
+    const optionName = equalsIndex === -1 ? token.slice(2) : token.slice(2, equalsIndex);
+    const inlineValue = equalsIndex === -1 ? undefined : token.slice(equalsIndex + 1);
+
+    if (!optionName) {
+      throw new Error(`Opcao invalida: ${token}`);
+    }
+
+    if (inlineValue !== undefined) {
+      return {
+        name: optionName,
+        value: inlineValue,
+        nextIndex: index,
+      };
+    }
+
+    const nextValue = args[index + 1];
+    if (nextValue === undefined || nextValue.startsWith('-')) {
+      throw new Error(`A opcao --${optionName} requer um valor.`);
+    }
+
+    return {
+      name: optionName,
+      value: nextValue,
+      nextIndex: index + 1,
+    };
+  }
+
+  if (token.startsWith('-')) {
+    const equalsIndex = token.indexOf('=');
+    const rawName = equalsIndex === -1 ? token.slice(1) : token.slice(1, equalsIndex);
+    const inlineValue = equalsIndex === -1 ? undefined : token.slice(equalsIndex + 1);
+
+    if (!rawName || rawName.length !== 1) {
+      throw new Error(`Opcao invalida: ${token}`);
+    }
+
+    const mappedName = shortOptionNames[rawName];
+    if (!mappedName) {
+      throw new Error(`Opcao desconhecida: ${token}`);
+    }
+
+    if (inlineValue !== undefined) {
+      return {
+        name: mappedName,
+        value: inlineValue,
+        nextIndex: index,
+      };
+    }
+
+    const nextValue = args[index + 1];
+    if (nextValue === undefined || nextValue.startsWith('-')) {
+      throw new Error(`A opcao -${rawName} requer um valor.`);
+    }
+
+    return {
+      name: mappedName,
+      value: nextValue,
+      nextIndex: index + 1,
+    };
+  }
+
+  throw new Error(`Opcao invalida: ${token}`);
+}
+
+function parseCommandArguments(commandName, rawArgs) {
+  const definition = commandDefinitions[commandName];
+  const positionals = [];
+  const parsedOptions = {
+    field: undefined,
+    output: definition.supportsOutput ? 'text' : undefined,
+    help: false,
+  };
+
+  for (let index = 0; index < rawArgs.length; index += 1) {
+    const token = rawArgs[index];
+
+    if (helpAliases.has(token)) {
+      parsedOptions.help = true;
+      continue;
+    }
+
+    if (token === '--') {
+      positionals.push(...rawArgs.slice(index + 1));
+      break;
+    }
+
+    if (token.startsWith('-')) {
+      const parsedOption = parseOptionToken(token, rawArgs, index);
+      index = parsedOption.nextIndex;
+
+      if (parsedOption.name === 'field') {
+        if (definition.fields.length === 0) {
+          throw new Error(`A opcao --field nao esta disponivel para o comando "${commandName}".`);
+        }
+
+        if (!definition.fields.includes(parsedOption.value)) {
+          throw new Error(
+            `Valor invalido para --field: ${parsedOption.value}. Use um destes: ${definition.fields.join(', ')}.`,
+          );
+        }
+
+        parsedOptions.field = parsedOption.value;
+        continue;
+      }
+
+      if (parsedOption.name === 'output') {
+        if (!definition.supportsOutput) {
+          throw new Error(`A opcao --output nao esta disponivel para o comando "${commandName}".`);
+        }
+
+        if (!['text', 'json'].includes(parsedOption.value)) {
+          throw new Error(`Valor invalido para --output: ${parsedOption.value}. Use "text" ou "json".`);
+        }
+
+        parsedOptions.output = parsedOption.value;
+        continue;
+      }
+
+      throw new Error(`Opcao desconhecida: ${token}`);
+    }
+
+    positionals.push(token);
+  }
+
+  if (parsedOptions.help) {
+    return parsedOptions;
+  }
+
+  if (positionals.length === 0) {
+    throw new Error('E necessario informar o valor do comando.');
+  }
+
+  if (positionals.length > 1) {
+    throw new Error(`Argumento inesperado: ${positionals[1]}`);
+  }
+
+  return {
+    ...parsedOptions,
+    value: positionals[0],
+  };
+}
+
+function printFieldValue(field, value, output) {
+  if (output === 'json') {
+    console.log(JSON.stringify({ [field]: value }, null, 2));
+    return;
+  }
+
+  console.log(value);
+}
+
+function printAnalysisSummary(result, normalizedKey) {
+  const styles = makeStyleHelpers();
+
+  console.log(`${styles.bold('Valido:')} ${styles.color(result.valid, result.valid)}`);
+  console.log(`${styles.bold('Normalizado:')} ${result[normalizedKey]}`);
+  console.log(`${styles.bold('Formatado:')} ${result.formatted}`);
+}
+
+function executeAnalysisCommand(commandName, parsedArguments) {
+  const definition = commandDefinitions[commandName];
+  const result = definition.analyze(parsedArguments.value);
+
+  if (parsedArguments.field) {
+    printFieldValue(parsedArguments.field, result[parsedArguments.field], parsedArguments.output);
+  } else if (parsedArguments.output === 'json') {
+    console.log(JSON.stringify(result, null, 2));
+  } else {
+    printAnalysisSummary(result, definition.normalizedKey);
+  }
+
+  return result.valid ? 0 : 2;
+}
+
+function runCommand(commandName, rawArgs) {
+  const parsedArguments = parseCommandArguments(commandName, rawArgs);
+
+  if (parsedArguments.help) {
+    console.log(renderCommandHelp(commandName));
+    return 0;
+  }
+
+  const definition = commandDefinitions[commandName];
+
+  if (typeof definition.execute === 'function') {
+    return definition.execute(parsedArguments.value);
+  }
+
+  return executeAnalysisCommand(commandName, parsedArguments);
+}
+
+function main(argv) {
+  if (argv.length === 0) {
+    return fail('E necessario informar um comando.', renderGlobalHelp());
+  }
+
+  const [commandName, ...commandArguments] = argv;
+
+  if (helpAliases.has(commandName)) {
+    console.log(renderGlobalHelp());
+    return 0;
+  }
+
+  if (!commandDefinitions[commandName]) {
+    return fail(`Comando desconhecido: ${commandName}`, renderGlobalHelp());
+  }
+
+  try {
+    return runCommand(commandName, commandArguments);
+  } catch (error) {
+    return fail(error.message, renderCommandHelp(commandName));
+  }
+}
+
+process.exitCode = main(process.argv.slice(2));
