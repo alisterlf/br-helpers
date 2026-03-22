@@ -1,6 +1,6 @@
 {
   "name": "br-helpers",
-  "version": "3.1.1",
+  "version": "3.1.2",
   "description": "Helpers para validar, formatar e analisar CPF, CNPJ, CEP, telefone e outros identificadores brasileiros.",
   "keywords": [
     "cpf",
