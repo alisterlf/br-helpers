@@ -131,12 +131,12 @@ export class BrazilianDocumentEngine {
   }
 
   static #isValidValue<TKey extends AnalysisValueKey>(value: string, definition: DocumentDefinition<TKey>): boolean {
-    const { baseLength, valuePattern } = definition;
-    if (value.length !== baseLength + 2 || !valuePattern.test(value)) {
+    if (this.#hasOnlyRepeatedCharacters(value)) {
       return false;
     }
 
-    if (this.#hasOnlyRepeatedCharacters(value)) {
+    const { baseLength, valuePattern } = definition;
+    if (value.length !== baseLength + 2 || !valuePattern.test(value)) {
       return false;
     }
 
