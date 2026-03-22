@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.1.1
+
+### Patch Changes
+
+- cc2b075: Updated the static method #isValidValue to improve validation logic.
+
 ## 3.1.0
 
 ### Minor Changes
