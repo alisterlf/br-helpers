@@ -32,7 +32,7 @@ Nas tabelas abaixo, cada celula mostra `ops/s (% do throughput do br-helpers naq
 | `cpf` | 1,311,813 (9%) | 1,208,693 (12%) | 1,742,383 (14%) |
 
 ```mermaid
-xychart-beta
+xychart-beta horizontal
     title "CPF misto (% do throughput do br-helpers)"
     x-axis ["br-helpers", "br-validations", "gerador-validador-cpf", "validar-cpf", "brazilian-values", "validations-br", "validation-br", "js-brasil", "@fnando/cpf", "cpf-cnpj-validator", "cpf"]
     y-axis "Percentual" 0 --> 100
@@ -53,7 +53,7 @@ xychart-beta
 | `cpf-cnpj-validator` | 449,454 (4%) | 418,080 (8%) | 607,077 (9%) |
 
 ```mermaid
-xychart-beta
+xychart-beta horizontal
     title "CNPJ misto (% do throughput do br-helpers)"
     x-axis ["br-helpers", "br-validations", "js-brasil", "validations-br", "brazilian-values", "validation-br", "@fnando/cnpj", "cpf-cnpj-validator"]
     y-axis "Percentual" 0 --> 100
