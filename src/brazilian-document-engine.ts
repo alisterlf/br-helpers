@@ -3,7 +3,10 @@ import { AlphanumericIdentifier, NumericIdentifier } from './identifiers';
 
 type DocumentType = 'cpf' | 'cnpj';
 type AnalysisValueKey = 'digits' | 'value';
-type IdentifierConstructor = { from(input: unknown): Identifier };
+type IdentifierConstructor = {
+  from(input: unknown): Identifier;
+  normalizeValue(input: unknown): string;
+};
 type CheckDigitWeights = {
   first: readonly number[];
   second: readonly number[];
@@ -15,7 +18,6 @@ type DocumentDefinition<TKey extends AnalysisValueKey> = {
   identifierConstructor: IdentifierConstructor;
   maskSlots: ReadonlyArray<MaskSlot>;
   baseLength: number;
-  valuePattern: RegExp;
   checkDigitWeights: CheckDigitWeights;
 };
 
@@ -53,7 +55,6 @@ const documentDefinitions: DocumentDefinitionMap = {
       [6, '.'],
       [9, '-'],
     ],
-    valuePattern: /^\d{11}$/,
     checkDigitWeights: buildCheckDigitWeights(9),
   },
   cnpj: {
@@ -66,7 +67,6 @@ const documentDefinitions: DocumentDefinitionMap = {
       [8, '/'],
       [12, '-'],
     ],
-    valuePattern: /^[A-Z0-9]{12}\d{2}$/,
     checkDigitWeights: buildCheckDigitWeights(12),
   },
 };
@@ -92,18 +92,19 @@ export class BrazilianDocumentEngine {
     const definition = this.#getDefinition(document);
     const identifier = definition.identifierConstructor.from(input);
     const value = identifier.value;
+    const valid = this.#isValidValue(value, definition);
+    const formatted = identifier.format(definition.maskSlots);
 
-    return {
-      raw: input,
-      [definition.resultKey]: value,
-      valid: this.#isValidValue(value, definition),
-      formatted: identifier.format(definition.maskSlots),
-    } as NumericDocumentAnalysis | AlphanumericDocumentAnalysis;
+    if (definition.resultKey === 'digits') {
+      return { raw: input, digits: value, valid, formatted };
+    }
+
+    return { raw: input, value, valid, formatted };
   }
 
   static isValid(input: unknown, document: DocumentType): boolean {
     const definition = this.#getDefinition(document);
-    return this.#isValidValue(definition.identifierConstructor.from(input).value, definition);
+    return this.#isValidValue(definition.identifierConstructor.normalizeValue(input), definition);
   }
 
   static format(input: unknown, document: DocumentType): string {
@@ -131,12 +132,11 @@ export class BrazilianDocumentEngine {
   }
 
   static #isValidValue<TKey extends AnalysisValueKey>(value: string, definition: DocumentDefinition<TKey>): boolean {
-    if (this.#hasOnlyRepeatedCharacters(value)) {
+    if (value.length !== definition.baseLength + 2) {
       return false;
     }
 
-    const { baseLength, valuePattern } = definition;
-    if (value.length !== baseLength + 2 || !valuePattern.test(value)) {
+    if (this.#hasOnlyRepeatedCharacters(value)) {
       return false;
     }
 

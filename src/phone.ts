@@ -84,10 +84,10 @@ export class Phone {
   }
 
   static isValid(phone: unknown): boolean {
-    const digits = NumericIdentifier.from(phone);
-    const ddd = this.#getDdd(digits.value);
-    const kind = this.#getKind(digits.value);
-    return this.#isValidPhone(phone, digits.value, ddd, kind);
+    const digits = NumericIdentifier.normalizeValue(phone);
+    const ddd = this.#getDdd(digits);
+    const kind = this.#getKind(digits);
+    return this.#isValidPhone(phone, digits, ddd, kind);
   }
 
   static format(phone: unknown): string {
