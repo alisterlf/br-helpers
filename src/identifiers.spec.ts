@@ -21,6 +21,15 @@ describe('AlphanumericIdentifier', () => {
       [12, '-'],
     ]);
   });
+
+  it('should expose normalization without creating an identifier instance', () => {
+    expect(AlphanumericIdentifier.normalizeValue('12ABC34501DE35')).toBe('12ABC34501DE35');
+    expect(AlphanumericIdentifier.normalizeValue('12abc345/01de-35')).toBe('12ABC34501DE35');
+  });
+
+  it('should keep unicode uppercase semantics on the compatibility path', () => {
+    expect(AlphanumericIdentifier.normalizeValue('12ıabcç345/01de-35')).toBe('12IABC34501DE35');
+  });
 });
 
 describe('NumericIdentifier', () => {
@@ -51,5 +60,10 @@ describe('NumericIdentifier', () => {
 
     expect(identifier.value).toBe('123450135');
     expect(identifier.digits).toBe('123450135');
+  });
+
+  it('should expose normalization without creating an identifier instance', () => {
+    expect(NumericIdentifier.normalizeValue('13768663663')).toBe('13768663663');
+    expect(NumericIdentifier.normalizeValue('CPF: 137.686.636-63')).toBe('13768663663');
   });
 });

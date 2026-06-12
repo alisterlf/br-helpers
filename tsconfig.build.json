@@ -6,6 +6,7 @@
     "declaration": true,
     "emitDeclarationOnly": true,
     "removeComments": true,
+    "rootDir": "./src",
     "outDir": "./dist"
   },
   "include": ["src/**/*.ts"],

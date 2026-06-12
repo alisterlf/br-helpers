@@ -5,7 +5,7 @@ export class Cep {
   static isValid(cep: string): boolean {
     const hasValue = !!cep || typeof cep === 'string';
     const cepLength = 8;
-    return hasValue && NumericIdentifier.from(cep).length === cepLength;
+    return hasValue && NumericIdentifier.normalizeValue(cep).length === cepLength;
   }
 
   static format(cep: string): string {

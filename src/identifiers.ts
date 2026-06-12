@@ -1,5 +1,13 @@
 export type MaskSlot = [position: number, symbol: string];
 
+function isDigitCode(code: number): boolean {
+  return code >= 48 && code <= 57;
+}
+
+function isUppercaseAlphanumericCode(code: number): boolean {
+  return isDigitCode(code) || (code >= 65 && code <= 90);
+}
+
 export abstract class Identifier {
   readonly value: string;
 
@@ -56,10 +64,33 @@ export class AlphanumericIdentifier extends Identifier {
     return new AlphanumericIdentifier(this.normalizeValue(input));
   }
 
-  protected static normalizeValue(input: unknown): string {
-    return this.normalizeInput(input)
-      .toUpperCase()
-      .replace(/[^A-Z0-9]/g, '');
+  static normalizeValue(input: unknown): string {
+    const text = this.normalizeInput(input);
+    const length = text.length;
+    let idx = 0;
+
+    while (idx < length && isUppercaseAlphanumericCode(text.charCodeAt(idx))) {
+      idx += 1;
+    }
+
+    if (idx === length) {
+      return text;
+    }
+
+    let result = text.slice(0, idx);
+    for (; idx < length; idx += 1) {
+      const code = text.charCodeAt(idx);
+
+      if (isUppercaseAlphanumericCode(code)) {
+        result += text[idx];
+      } else if (code >= 97 && code <= 122) {
+        result += String.fromCharCode(code - 32);
+      } else if (code >= 128) {
+        return text.toUpperCase().replace(/[^A-Z0-9]/g, '');
+      }
+    }
+
+    return result;
   }
 }
 
@@ -72,7 +103,26 @@ export class NumericIdentifier extends Identifier {
     return new NumericIdentifier(this.normalizeValue(input));
   }
 
-  protected static normalizeValue(input: unknown): string {
-    return this.normalizeInput(input).replace(/\D/g, '');
+  static normalizeValue(input: unknown): string {
+    const text = this.normalizeInput(input);
+    const length = text.length;
+    let idx = 0;
+
+    while (idx < length && isDigitCode(text.charCodeAt(idx))) {
+      idx += 1;
+    }
+
+    if (idx === length) {
+      return text;
+    }
+
+    let result = text.slice(0, idx);
+    for (; idx < length; idx += 1) {
+      if (isDigitCode(text.charCodeAt(idx))) {
+        result += text[idx];
+      }
+    }
+
+    return result;
   }
 }

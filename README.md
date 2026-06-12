@@ -11,25 +11,25 @@ Biblioteca para validar, formatar, analisar e normalizar identificadores brasile
 
 ## Desempenho
 
-Na execucao publica de benchmark de 22/03/2026 no repo [br-helpers-benchmark](https://github.com/alisterlf/br-helpers-benchmark), o `br-helpers` ficou em 1o lugar nos cenarios mistos de CPF e CNPJ entre as bibliotecas populares comparadas no npm.
+Na execução pública de benchmark de 22/03/2026 no repositório [br-helpers-benchmark](https://github.com/alisterlf/br-helpers-benchmark), o `br-helpers` ficou em 1º lugar nos cenários mistos de CPF e CNPJ entre as bibliotecas populares comparadas do npm.
 
-Nas tabelas abaixo, cada celula mostra `ops/s (% do throughput do br-helpers naquele cenario)`. Assim fica mais facil comparar o valor absoluto e a distancia relativa para a baseline.
+Nas tabelas abaixo, cada célula mostra `ops/s (% do throughput do br-helpers naquele cenário)`. Assim fica mais fácil comparar o valor absoluto e a distância relativa para a baseline.
 
 ### CPF
 
-| Biblioteca | Validos sem mascara | DV incorreto | Misto |
-| --- | ---: | ---: | ---: |
-| `br-helpers` | 14,071,031 (100%) | 9,983,228 (100%) | 12,534,156 (100%) |
-| `br-validations` | 10,723,861 (76%) | 8,589,885 (86%) | 10,423,544 (83%) |
-| `gerador-validador-cpf` | 7,447,902 (53%) | 5,786,769 (58%) | 7,163,119 (57%) |
-| `validar-cpf` | 5,974,215 (42%) | 4,875,385 (49%) | 6,696,503 (53%) |
-| `brazilian-values` | 4,173,274 (30%) | 3,697,350 (37%) | 4,865,178 (39%) |
-| `validations-br` | 4,065,900 (29%) | 3,507,960 (35%) | 4,655,205 (37%) |
-| `validation-br` | 6,180,852 (44%) | 3,212,046 (32%) | 4,209,947 (34%) |
-| `js-brasil` | 3,960,898 (28%) | 3,440,446 (34%) | 4,037,402 (32%) |
-| `@fnando/cpf` | 1,960,492 (14%) | 1,813,368 (18%) | 2,717,810 (22%) |
-| `cpf-cnpj-validator` | 1,918,325 (14%) | 1,768,985 (18%) | 2,622,318 (21%) |
-| `cpf` | 1,311,813 (9%) | 1,208,693 (12%) | 1,742,383 (14%) |
+| Biblioteca              | Validos sem mascara |     DV incorreto |             Misto |
+| ----------------------- | ------------------: | ---------------: | ----------------: |
+| `br-helpers`            |   14,071,031 (100%) | 9,983,228 (100%) | 12,534,156 (100%) |
+| `br-validations`        |    10,723,861 (76%) |  8,589,885 (86%) |  10,423,544 (83%) |
+| `gerador-validador-cpf` |     7,447,902 (53%) |  5,786,769 (58%) |   7,163,119 (57%) |
+| `validar-cpf`           |     5,974,215 (42%) |  4,875,385 (49%) |   6,696,503 (53%) |
+| `brazilian-values`      |     4,173,274 (30%) |  3,697,350 (37%) |   4,865,178 (39%) |
+| `validations-br`        |     4,065,900 (29%) |  3,507,960 (35%) |   4,655,205 (37%) |
+| `validation-br`         |     6,180,852 (44%) |  3,212,046 (32%) |   4,209,947 (34%) |
+| `js-brasil`             |     3,960,898 (28%) |  3,440,446 (34%) |   4,037,402 (32%) |
+| `@fnando/cpf`           |     1,960,492 (14%) |  1,813,368 (18%) |   2,717,810 (22%) |
+| `cpf-cnpj-validator`    |     1,918,325 (14%) |  1,768,985 (18%) |   2,622,318 (21%) |
+| `cpf`                   |      1,311,813 (9%) |  1,208,693 (12%) |   1,742,383 (14%) |
 
 ```mermaid
 xychart-beta horizontal
@@ -41,16 +41,16 @@ xychart-beta horizontal
 
 ### CNPJ
 
-| Biblioteca | Validos sem mascara | DV incorreto | Misto |
-| --- | ---: | ---: | ---: |
-| `br-helpers` | 10,847,399 (100%) | 5,521,262 (100%) | 7,041,163 (100%) |
-| `br-validations` | 6,732,193 (62%) | 4,318,535 (78%) | 5,694,458 (81%) |
-| `js-brasil` | 5,102,666 (47%) | 3,048,297 (55%) | 3,960,542 (56%) |
-| `validations-br` | 4,140,787 (38%) | 2,775,958 (50%) | 3,560,248 (51%) |
-| `brazilian-values` | 3,745,655 (35%) | 2,600,348 (47%) | 3,325,153 (47%) |
-| `validation-br` | 1,034,955 (10%) | 771,381 (14%) | 1,026,318 (15%) |
-| `@fnando/cnpj` | 498,416 (5%) | 449,309 (8%) | 660,309 (9%) |
-| `cpf-cnpj-validator` | 449,454 (4%) | 418,080 (8%) | 607,077 (9%) |
+| Biblioteca           | Validos sem mascara |     DV incorreto |            Misto |
+| -------------------- | ------------------: | ---------------: | ---------------: |
+| `br-helpers`         |   10,847,399 (100%) | 5,521,262 (100%) | 7,041,163 (100%) |
+| `br-validations`     |     6,732,193 (62%) |  4,318,535 (78%) |  5,694,458 (81%) |
+| `js-brasil`          |     5,102,666 (47%) |  3,048,297 (55%) |  3,960,542 (56%) |
+| `validations-br`     |     4,140,787 (38%) |  2,775,958 (50%) |  3,560,248 (51%) |
+| `brazilian-values`   |     3,745,655 (35%) |  2,600,348 (47%) |  3,325,153 (47%) |
+| `validation-br`      |     1,034,955 (10%) |    771,381 (14%) |  1,026,318 (15%) |
+| `@fnando/cnpj`       |        498,416 (5%) |     449,309 (8%) |     660,309 (9%) |
+| `cpf-cnpj-validator` |        449,454 (4%) |     418,080 (8%) |     607,077 (9%) |
 
 ```mermaid
 xychart-beta horizontal
@@ -60,9 +60,22 @@ xychart-beta horizontal
     bar [100, 81, 56, 51, 47, 15, 9, 9]
 ```
 
-O benchmark tambem mede cenarios com documentos validos sem mascara, com mascara, digitos verificadores incorretos, digitos repetidos e valores incompletos. Nem todas as bibliotecas comparadas suportam CNPJ alfanumerico, mas o `br-helpers` cobre CPF, CNPJ numerico e CNPJ alfanumerico no mesmo pacote.
+O benchmark também mede cenários com documentos válidos sem máscara, com máscara, dígitos verificadores incorretos, dígitos repetidos e valores incompletos. Nem todas as bibliotecas comparadas suportam CNPJ alfanumérico, mas o `br-helpers` cobre CPF, CNPJ numérico e CNPJ alfanumérico no mesmo pacote.
 
-Os numeros absolutos variam por maquina, versao do Node.js e dataset, entao o ideal e consultar o repositorio de benchmark para ver a metodologia, as tabelas completas e as bibliotecas incluidas na comparacao.
+Os números absolutos variam por máquina, versão do Node.js e dataset, então o ideal é consultar o repositório de benchmark para ver a metodologia, as tabelas completas e as bibliotecas incluídas na comparação.
+
+### Como o desempenho é alcançado
+
+- A normalização percorre a entrada em uma única passada por `charCode`, sem regex no caminho quente. Entrada já normalizada (só dígitos, ou só maiúsculas e dígitos no CNPJ) é devolvida como está, sem alocação.
+- `isValid` valida a string normalizada diretamente, sem criar instâncias de `Identifier` nem objetos intermediários.
+- As checagens rodam da mais barata para a mais cara: tamanho, depois caracteres repetidos, depois dígitos verificadores.
+- Nenhum teste de padrão por regex é necessário: como os dígitos verificadores calculados estão sempre entre 0 e 9, uma letra nas duas últimas posições nunca confere.
+- `parse` retorna objetos com chaves literais, mantendo formas monomórficas para o motor JavaScript.
+- Entrada com caracteres não ASCII cai em um caminho de compatibilidade que preserva a semântica Unicode de `toUpperCase`.
+
+### Como as mudanças de desempenho são verificadas
+
+Toda mudança no caminho quente é comparada contra a branch `main` usando os mesmos datasets e a mesma configuração do repositório de benchmark, executando nas duas ordens de variante para descartar viés de ordem. Antes de medir, um passo de equivalência confirma que `isValid`, `format` e `parse` retornam resultados idênticos nas duas versões para todos os valores dos cenários.
 
 ## O que o pacote oferece
 
@@ -70,7 +83,7 @@ Os numeros absolutos variam por maquina, versao do Node.js e dataset, entao o id
 - `Cnpj`: validação, formatação e análise de CNPJ numérico e alfanumérico.
 - `Cep`: validação estrutural e formatação.
 - `Phone`: validação de DDD, detecção de linha fixa ou celular e `parse`.
-- `NumericIdentifier` e `AlphanumericIdentifier`: normalização reutilizável para regras customizadas.
+- `NumericIdentifier` e `AlphanumericIdentifier`: normalização reutilizável para regras customizadas, incluindo `normalizeValue` estático sem criação de instância.
 - `Identifier` e `MaskSlot`: primitives para construir máscaras e abstrair novos helpers.
 - CLI `br-helpers`: comandos para terminal com saída em texto ou JSON.
 - Exportações raiz e por subpath para consumo pontual.
@@ -126,17 +139,17 @@ const { NumericIdentifier } = require('br-helpers/identifiers');
 
 ## API resumida
 
-| Export | API principal | Quando usar |
-| --- | --- | --- |
-| `Cpf` | `parse`, `isValid`, `format` | CPF com ou sem máscara. |
-| `Cnpj` | `parse`, `isValid`, `format` | CNPJ numérico legado e alfanumérico. |
-| `Cep` | `isValid`, `format` | CEP com validação estrutural de 8 dígitos. |
-| `Phone` | `parse`, `isValid`, `format` | Telefone com DDD e detecção de tipo da linha. |
-| `NumericIdentifier` | `from`, `value`, `digits`, `length`, `isEmpty`, `format` | Regras estritamente numéricas. |
-| `AlphanumericIdentifier` | `from`, `value`, `digits`, `length`, `isEmpty`, `format` | Regras alfanuméricas em maiúsculo. |
-| `Identifier` | `value`, `digits`, `length`, `isEmpty`, `format` | Classe base abstrata para extensões. |
-| `MaskSlot` | `[position, symbol]` | Tipo para descrever máscaras customizadas. |
-| `CpfAnalysis`, `CnpjAnalysis`, `PhoneAnalysis`, `PhoneKind` | Tipos exportados | Tipagem de retorno e composição em TypeScript. |
+| Export                                                      | API principal                                                              | Quando usar                                    |
+| ----------------------------------------------------------- | -------------------------------------------------------------------------- | ---------------------------------------------- |
+| `Cpf`                                                       | `parse`, `isValid`, `format`                                               | CPF com ou sem máscara.                        |
+| `Cnpj`                                                      | `parse`, `isValid`, `format`                                               | CNPJ numérico legado e alfanumérico.           |
+| `Cep`                                                       | `isValid`, `format`                                                        | CEP com validação estrutural de 8 dígitos.     |
+| `Phone`                                                     | `parse`, `isValid`, `format`                                               | Telefone com DDD e detecção de tipo da linha.  |
+| `NumericIdentifier`                                         | `from`, `normalizeValue`, `value`, `digits`, `length`, `isEmpty`, `format` | Regras estritamente numéricas.                 |
+| `AlphanumericIdentifier`                                    | `from`, `normalizeValue`, `value`, `digits`, `length`, `isEmpty`, `format` | Regras alfanuméricas em maiúsculo.             |
+| `Identifier`                                                | `value`, `digits`, `length`, `isEmpty`, `format`                           | Classe base abstrata para extensões.           |
+| `MaskSlot`                                                  | `[position, symbol]`                                                       | Tipo para descrever máscaras customizadas.     |
+| `CpfAnalysis`, `CnpjAnalysis`, `PhoneAnalysis`, `PhoneKind` | Tipos exportados                                                           | Tipagem de retorno e composição em TypeScript. |
 
 ## Exemplos
 
@@ -240,6 +253,9 @@ numeric.length; // 11
 numeric.isEmpty(); // false
 numeric.digits; // '13768663663'
 numeric.format(cpfMask); // '137.686.636-63'
+
+// Normalização sem criar instância:
+NumericIdentifier.normalizeValue('CPF: 137.686.636-63'); // '13768663663'
 ```
 
 ### AlphanumericIdentifier
@@ -261,6 +277,9 @@ identifier.length; // 14
 identifier.isEmpty(); // false
 identifier.digits; // '123450135'
 identifier.format(cnpjMask); // '12.ABC.345/01DE-35'
+
+// Normalização sem criar instância:
+AlphanumericIdentifier.normalizeValue('12abc345/01de-35'); // '12ABC34501DE35'
 ```
 
 ### Formatação progressiva
