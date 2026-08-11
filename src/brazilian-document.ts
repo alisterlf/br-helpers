@@ -136,54 +136,12 @@ export abstract class BrazilianDocument<TAnalysis extends DocumentAnalysisBase> 
     return charIndex === totalLength && hasDistinctCharacters;
   }
 
+  /**
+   * A normalized value is canonical by construction (only digits, plus
+   * uppercase letters when allowed), so the single-pass validator always
+   * reaches a verdict for it.
+   */
   private isValidValue(value: string): boolean {
-    if (value.length !== this.totalLength) {
-      return false;
-    }
-
-    if (this.hasOnlyRepeatedCharacters(value)) {
-      return false;
-    }
-
-    return this.hasValidCheckDigits(value);
-  }
-
-  private hasOnlyRepeatedCharacters(value: string): boolean {
-    const firstCharacter = value[0];
-
-    for (let idx = 1; idx < value.length; idx += 1) {
-      if (value[idx] !== firstCharacter) {
-        return false;
-      }
-    }
-
-    return true;
-  }
-
-  private checksumValueAt(value: string, idx: number): number {
-    return value.charCodeAt(idx) - 48;
-  }
-
-  private hasValidCheckDigits(value: string): boolean {
-    const { baseLength, checkDigitCalculator } = this;
-    const { firstWeights, secondWeights, extraDigitWeight } = checkDigitCalculator;
-    let firstSum = 0;
-    let secondSum = 0;
-
-    for (let idx = 0; idx < baseLength; idx += 1) {
-      const characterValue = this.checksumValueAt(value, idx);
-      firstSum += characterValue * firstWeights[idx];
-      secondSum += characterValue * secondWeights[idx];
-    }
-
-    const firstCheckDigit = checkDigitCalculator.checkDigitFor(firstSum);
-    if (this.checksumValueAt(value, baseLength) !== firstCheckDigit) {
-      return false;
-    }
-
-    secondSum += firstCheckDigit * extraDigitWeight;
-    const secondCheckDigit = checkDigitCalculator.checkDigitFor(secondSum);
-
-    return this.checksumValueAt(value, baseLength + 1) === secondCheckDigit;
+    return this.validateCanonicalString(value) ?? false;
   }
 }

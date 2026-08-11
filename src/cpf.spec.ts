@@ -80,4 +80,26 @@ describe('Cpf', () => {
   it('Checker 2 > 1', () => {
     expect(Cpf.isValid('855.178.021-25')).toBeTruthy();
   });
+
+  describe('isValid - lenient input', () => {
+    it('Should ignore spaces around and between digits', () => {
+      expect(Cpf.isValid(' 137 686 636 63 ')).toBeTruthy();
+    });
+
+    it('Should ignore separators at unusual positions', () => {
+      expect(Cpf.isValid('1.3.7.6.8.6.6.3.6.6.3')).toBeTruthy();
+    });
+
+    it('Should ignore doubled separators', () => {
+      expect(Cpf.isValid('137..686..636--63')).toBeTruthy();
+    });
+
+    it('Should ignore letters mixed into a valid CPF', () => {
+      expect(Cpf.isValid('a13768663663')).toBeTruthy();
+    });
+
+    it('Should accept numeric input', () => {
+      expect(Cpf.isValid(13768663663)).toBeTruthy();
+    });
+  });
 });

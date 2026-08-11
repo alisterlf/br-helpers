@@ -157,4 +157,26 @@ describe('Cnpj', () => {
   it('Should return true to a valid CNPJ with second checker 2 >= 1', () => {
     expect(Cnpj.isValid('53.638.687/0001-51')).toBeTruthy();
   });
+
+  describe('isValid - lenient input', () => {
+    it('Should ignore spaces around and between characters', () => {
+      expect(Cnpj.isValid(' 26 149 878 0001 87 ')).toBeTruthy();
+    });
+
+    it('Should ignore separators at unusual positions', () => {
+      expect(Cnpj.isValid('2.6.1.4.9.8.7.8.0.0.0.1.8.7')).toBeTruthy();
+    });
+
+    it('Should ignore doubled separators', () => {
+      expect(Cnpj.isValid('26..149..878//0001--87')).toBeTruthy();
+    });
+
+    it('Should ignore non-ASCII characters', () => {
+      expect(Cnpj.isValid('é26.149.878/0001-87')).toBeTruthy();
+    });
+
+    it('Should accept numeric input', () => {
+      expect(Cnpj.isValid(26533854000127)).toBeTruthy();
+    });
+  });
 });
