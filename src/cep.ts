@@ -1,6 +1,7 @@
 import { NumericIdentifier } from './identifiers';
+
 export class Cep {
-  static readonly #formatMask: ReadonlyArray<[number, string]> = [[5, '-']];
+  private static readonly formatMask: ReadonlyArray<[number, string]> = [[5, '-']];
 
   static isValid(cep: string): boolean {
     const hasValue = !!cep || typeof cep === 'string';
@@ -9,6 +10,6 @@ export class Cep {
   }
 
   static format(cep: string): string {
-    return NumericIdentifier.from(cep).format(this.#formatMask);
+    return NumericIdentifier.from(cep).format(this.formatMask);
   }
 }
