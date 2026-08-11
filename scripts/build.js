@@ -27,12 +27,15 @@ function getEntryPoints(dir) {
 
 const entryPoints = getEntryPoints(srcDir);
 
+// Sourcemaps are intentionally not generated: they accounted for ~70% of the
+// published package bytes and consumers of a small helpers library rarely
+// step through its internals.
 const sharedConfig = {
   entryPoints,
   entryNames: '[dir]/[name]',
   outbase: srcDir,
   minify: true,
-  sourcemap: true,
+  sourcemap: false,
 };
 
 async function main() {
