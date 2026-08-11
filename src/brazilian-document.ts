@@ -139,9 +139,10 @@ export abstract class BrazilianDocument<TAnalysis extends DocumentAnalysisBase> 
   /**
    * A normalized value is canonical by construction (only digits, plus
    * uppercase letters when allowed), so the single-pass validator always
-   * reaches a verdict for it.
+   * reaches a verdict for it; a deferral (undefined) can never happen here
+   * and compares as not valid.
    */
   private isValidValue(value: string): boolean {
-    return this.validateCanonicalString(value) ?? false;
+    return this.validateCanonicalString(value) === true;
   }
 }
