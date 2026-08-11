@@ -60,7 +60,7 @@ _Avoid_: script action, terminal route
 - A **Telefone** is either a **Linha movel**, a **Linha fixa**, or not identifiable yet.
 - A **Mascara** is applied to an **Identificador**.
 - **Normalizacao** produces the **Identificador** before any **Mascara** or **Digito verificador** logic runs.
-- Validation rejects an **Identificador** by the cheapest rule first: wrong length, then repeated characters, then **Digitos verificadores**.
+- Validation scans an **Identificador** in a single pass and rejects at the first failing rule: unexpected length, repeated characters, or **Digitos verificadores**.
 - A **Comando CLI** exposes one helper for CPF, CNPJ, CEP, telefone, or identificadores.
 
 ## Constraints
