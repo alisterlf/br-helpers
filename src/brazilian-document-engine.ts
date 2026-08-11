@@ -19,6 +19,8 @@ type DocumentDefinition<TKey extends AnalysisValueKey> = {
   maskSlots: ReadonlyArray<MaskSlot>;
   baseLength: number;
   checkDigitWeights: CheckDigitWeights;
+  allowsLetters: boolean;
+  maskPositionBitmap: number;
 };
 
 type DocumentDefinitionMap = {
@@ -45,29 +47,121 @@ function buildCheckDigitWeights(baseLength: number): CheckDigitWeights {
   };
 }
 
+function buildMaskPositionBitmap(maskSlots: ReadonlyArray<MaskSlot>): number {
+  let bitmap = 0;
+
+  for (const [position] of maskSlots) {
+    bitmap |= 1 << position;
+  }
+
+  return bitmap;
+}
+
+function computeCheckDigit(sum: number): number {
+  const remainder = sum % 11;
+  return remainder < 2 ? 0 : 11 - remainder;
+}
+
+/**
+ * Validates canonical string inputs in a single pass, without allocating a
+ * normalized copy. Returns undefined when the input needs the lenient
+ * normalize-then-validate path (unexpected characters or mask positions).
+ */
+function validateCanonicalString(text: string, definition: DocumentDefinition<AnalysisValueKey>): boolean | undefined {
+  const { baseLength, allowsLetters, maskPositionBitmap } = definition;
+  const { first, second, extraDigit } = definition.checkDigitWeights;
+  const totalLength = baseLength + 2;
+  const textLength = text.length;
+
+  let firstSum = 0;
+  let secondSum = 0;
+  let charIndex = 0;
+  let firstCharCode = 0;
+  let hasDistinctCharacters = false;
+
+  for (let idx = 0; idx < textLength; idx += 1) {
+    let code = text.charCodeAt(idx);
+
+    if (code >= 48 && code <= 57) {
+      // Digit: falls through to the checksum handling below.
+    } else if (code === 45 || code === 46 || (code === 47 && allowsLetters)) {
+      if (((maskPositionBitmap >>> charIndex) & 1) === 1) {
+        continue;
+      }
+
+      return undefined;
+    } else if (allowsLetters && code >= 65 && code <= 90) {
+      // Uppercase letter: falls through to the checksum handling below.
+    } else if (allowsLetters && code >= 97 && code <= 122) {
+      code -= 32;
+    } else {
+      return undefined;
+    }
+
+    if (charIndex >= totalLength) {
+      return false;
+    }
+
+    if (charIndex === 0) {
+      firstCharCode = code;
+    } else if (code !== firstCharCode) {
+      hasDistinctCharacters = true;
+    }
+
+    const characterValue = code - 48;
+
+    if (charIndex < baseLength) {
+      firstSum += characterValue * first[charIndex];
+      secondSum += characterValue * second[charIndex];
+    } else if (charIndex === baseLength) {
+      const firstDigit = computeCheckDigit(firstSum);
+
+      if (characterValue !== firstDigit) {
+        return false;
+      }
+
+      secondSum += firstDigit * extraDigit;
+    } else if (characterValue !== computeCheckDigit(secondSum)) {
+      return false;
+    }
+
+    charIndex += 1;
+  }
+
+  return charIndex === totalLength && hasDistinctCharacters;
+}
+
+const cpfMaskSlots: ReadonlyArray<MaskSlot> = [
+  [3, '.'],
+  [6, '.'],
+  [9, '-'],
+];
+
+const cnpjMaskSlots: ReadonlyArray<MaskSlot> = [
+  [2, '.'],
+  [5, '.'],
+  [8, '/'],
+  [12, '-'],
+];
+
 const documentDefinitions: DocumentDefinitionMap = {
   cpf: {
     resultKey: 'digits',
     identifierConstructor: NumericIdentifier,
     baseLength: 9,
-    maskSlots: [
-      [3, '.'],
-      [6, '.'],
-      [9, '-'],
-    ],
+    maskSlots: cpfMaskSlots,
     checkDigitWeights: buildCheckDigitWeights(9),
+    allowsLetters: false,
+    maskPositionBitmap: buildMaskPositionBitmap(cpfMaskSlots),
   },
   cnpj: {
     resultKey: 'value',
     identifierConstructor: AlphanumericIdentifier,
     baseLength: 12,
-    maskSlots: [
-      [2, '.'],
-      [5, '.'],
-      [8, '/'],
-      [12, '-'],
-    ],
+    maskSlots: cnpjMaskSlots,
     checkDigitWeights: buildCheckDigitWeights(12),
+    allowsLetters: true,
+    maskPositionBitmap: buildMaskPositionBitmap(cnpjMaskSlots),
   },
 };
 
@@ -104,6 +198,15 @@ export class BrazilianDocumentEngine {
 
   static isValid(input: unknown, document: DocumentType): boolean {
     const definition = this.#getDefinition(document);
+
+    if (typeof input === 'string') {
+      const canonicalResult = validateCanonicalString(input, definition);
+
+      if (canonicalResult !== undefined) {
+        return canonicalResult;
+      }
+    }
+
     return this.#isValidValue(definition.identifierConstructor.normalizeValue(input), definition);
   }
 
@@ -154,19 +257,14 @@ export class BrazilianDocumentEngine {
       secondSum += characterValue * checkDigitWeights.second[idx];
     }
 
-    const firstDigit = this.#getCheckDigit(firstSum);
+    const firstDigit = computeCheckDigit(firstSum);
     if (this.#getChecksumValue(value, baseLength) !== firstDigit) {
       return false;
     }
 
     secondSum += firstDigit * checkDigitWeights.extraDigit;
-    const secondDigit = this.#getCheckDigit(secondSum);
+    const secondDigit = computeCheckDigit(secondSum);
 
     return this.#getChecksumValue(value, baseLength + 1) === secondDigit;
-  }
-
-  static #getCheckDigit(sum: number): number {
-    const remainder = sum % 11;
-    return remainder < 2 ? 0 : 11 - remainder;
   }
 }
