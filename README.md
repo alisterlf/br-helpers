@@ -11,71 +11,78 @@ Biblioteca para validar, formatar, analisar e normalizar identificadores brasile
 
 ## Desempenho
 
-Na execução pública de benchmark de 22/03/2026 no repositório [br-helpers-benchmark](https://github.com/alisterlf/br-helpers-benchmark), o `br-helpers` ficou em 1º lugar nos cenários mistos de CPF e CNPJ entre as bibliotecas populares comparadas do npm.
+Na execução pública de benchmark de 11/08/2026 no repositório [br-helpers-benchmark](https://github.com/alisterlf/br-helpers-benchmark), o `br-helpers` 3.3.0 ficou em 1º lugar em todos os cenários de CPF e CNPJ, com 2x a 3x o throughput da segunda colocada no cenário misto. Desde a versão 3.3.0 a validação acontece em uma única passada sobre a string original, sem alocações, o que dobrou o throughput de CNPJ em relação à 3.2.0.
 
 Nas tabelas abaixo, cada célula mostra `ops/s (% do throughput do br-helpers naquele cenário)`. Assim fica mais fácil comparar o valor absoluto e a distância relativa para a baseline.
 
 ### CPF
 
-| Biblioteca              | Validos sem mascara |     DV incorreto |             Misto |
-| ----------------------- | ------------------: | ---------------: | ----------------: |
-| `br-helpers`            |   14,071,031 (100%) | 9,983,228 (100%) | 12,534,156 (100%) |
-| `br-validations`        |    10,723,861 (76%) |  8,589,885 (86%) |  10,423,544 (83%) |
-| `gerador-validador-cpf` |     7,447,902 (53%) |  5,786,769 (58%) |   7,163,119 (57%) |
-| `validar-cpf`           |     5,974,215 (42%) |  4,875,385 (49%) |   6,696,503 (53%) |
-| `brazilian-values`      |     4,173,274 (30%) |  3,697,350 (37%) |   4,865,178 (39%) |
-| `validations-br`        |     4,065,900 (29%) |  3,507,960 (35%) |   4,655,205 (37%) |
-| `validation-br`         |     6,180,852 (44%) |  3,212,046 (32%) |   4,209,947 (34%) |
-| `js-brasil`             |     3,960,898 (28%) |  3,440,446 (34%) |   4,037,402 (32%) |
-| `@fnando/cpf`           |     1,960,492 (14%) |  1,813,368 (18%) |   2,717,810 (22%) |
-| `cpf-cnpj-validator`    |     1,918,325 (14%) |  1,768,985 (18%) |   2,622,318 (21%) |
-| `cpf`                   |      1,311,813 (9%) |  1,208,693 (12%) |   1,742,383 (14%) |
+| Biblioteca              | Validos sem mascara |      DV incorreto |             Misto |
+| ----------------------- | ------------------: | ----------------: | ----------------: |
+| `br-helpers`            |   26,001,040 (100%) | 21,312,873 (100%) | 24,791,341 (100%) |
+| `cpf-cnpj-validator`    |    11,846,096 (46%) |   8,658,908 (41%) |  11,380,794 (46%) |
+| `br-validations`        |     9,725,734 (37%) |   7,557,893 (35%) |   9,863,230 (40%) |
+| `validations-br`        |     6,675,924 (26%) |   5,512,013 (26%) |   7,747,774 (31%) |
+| `gerador-validador-cpf` |     7,268,076 (28%) |   5,569,541 (26%) |   7,048,243 (28%) |
+| `validar-cpf`           |     6,042,369 (23%) |   4,841,677 (23%) |   6,877,705 (28%) |
+| `brazilian-values`      |     4,329,679 (17%) |   3,757,816 (18%) |   5,034,351 (20%) |
+| `js-brasil`             |     3,831,476 (15%) |   3,346,653 (16%) |   4,110,952 (17%) |
+| `validation-br`         |     5,768,410 (22%) |   3,060,462 (14%) |   4,075,544 (16%) |
+| `@fnando/cpf`           |      1,938,120 (7%) |    1,798,678 (8%) |   2,728,126 (11%) |
+| `cpf`                   |      1,961,723 (8%) |    1,738,707 (8%) |   2,584,594 (10%) |
 
 ```mermaid
 xychart-beta horizontal
     title "CPF misto (% do throughput do br-helpers)"
-    x-axis ["br-helpers", "br-validations", "gerador-validador-cpf", "validar-cpf", "brazilian-values", "validations-br", "validation-br", "js-brasil", "@fnando/cpf", "cpf-cnpj-validator", "cpf"]
+    x-axis ["br-helpers", "cpf-cnpj-validator", "br-validations", "validations-br", "gerador-validador-cpf", "validar-cpf", "brazilian-values", "js-brasil", "validation-br", "@fnando/cpf", "cpf"]
     y-axis "Percentual" 0 --> 100
-    bar [100, 83, 57, 53, 39, 37, 34, 32, 22, 21, 14]
+    bar [100, 46, 40, 31, 28, 28, 20, 17, 16, 11, 10]
 ```
 
 ### CNPJ
 
-| Biblioteca           | Validos sem mascara |     DV incorreto |            Misto |
-| -------------------- | ------------------: | ---------------: | ---------------: |
-| `br-helpers`         |   10,847,399 (100%) | 5,521,262 (100%) | 7,041,163 (100%) |
-| `br-validations`     |     6,732,193 (62%) |  4,318,535 (78%) |  5,694,458 (81%) |
-| `js-brasil`          |     5,102,666 (47%) |  3,048,297 (55%) |  3,960,542 (56%) |
-| `validations-br`     |     4,140,787 (38%) |  2,775,958 (50%) |  3,560,248 (51%) |
-| `brazilian-values`   |     3,745,655 (35%) |  2,600,348 (47%) |  3,325,153 (47%) |
-| `validation-br`      |     1,034,955 (10%) |    771,381 (14%) |  1,026,318 (15%) |
-| `@fnando/cnpj`       |        498,416 (5%) |     449,309 (8%) |     660,309 (9%) |
-| `cpf-cnpj-validator` |        449,454 (4%) |     418,080 (8%) |     607,077 (9%) |
+| Biblioteca           | Validos sem mascara |      DV incorreto |             Misto |
+| -------------------- | ------------------: | ----------------: | ----------------: |
+| `br-helpers`         |   20,888,165 (100%) | 17,606,874 (100%) | 19,995,468 (100%) |
+| `br-validations`     |     6,523,838 (31%) |   4,535,806 (26%) |   6,282,355 (31%) |
+| `validations-br`     |     4,797,175 (23%) |   3,582,124 (20%) |   4,632,904 (23%) |
+| `js-brasil`          |     4,341,484 (21%) |   2,766,466 (16%) |   3,743,085 (19%) |
+| `brazilian-values`   |     4,109,983 (20%) |   2,880,383 (16%) |   3,549,351 (18%) |
+| `cpf-cnpj-validator` |     3,041,825 (15%) |   2,332,786 (13%) |   3,276,468 (16%) |
+| `cpf`                |     2,277,593 (11%) |    1,585,093 (9%) |   2,273,928 (11%) |
+| `validation-br`      |      1,038,008 (5%) |      804,925 (5%) |    1,079,296 (5%) |
+| `@fnando/cnpj`       |        509,802 (2%) |      473,870 (3%) |       695,137 (3%) |
 
 ```mermaid
 xychart-beta horizontal
     title "CNPJ misto (% do throughput do br-helpers)"
-    x-axis ["br-helpers", "br-validations", "js-brasil", "validations-br", "brazilian-values", "validation-br", "@fnando/cnpj", "cpf-cnpj-validator"]
+    x-axis ["br-helpers", "br-validations", "validations-br", "js-brasil", "brazilian-values", "cpf-cnpj-validator", "cpf", "validation-br", "@fnando/cnpj"]
     y-axis "Percentual" 0 --> 100
-    bar [100, 81, 56, 51, 47, 15, 9, 9]
+    bar [100, 31, 23, 19, 18, 16, 11, 5, 3]
 ```
 
-O benchmark também mede cenários com documentos válidos sem máscara, com máscara, dígitos verificadores incorretos, dígitos repetidos e valores incompletos. Nem todas as bibliotecas comparadas suportam CNPJ alfanumérico, mas o `br-helpers` cobre CPF, CNPJ numérico e CNPJ alfanumérico no mesmo pacote.
+O benchmark também mede cenários com documentos válidos com máscara, entrada leniente (formatação fora do padrão), dígitos verificadores incorretos, dígitos repetidos e valores incompletos. Nem todas as bibliotecas comparadas suportam CNPJ alfanumérico, mas o `br-helpers` cobre CPF, CNPJ numérico e CNPJ alfanumérico no mesmo pacote.
 
 Os números absolutos variam por máquina, versão do Node.js e dataset, então o ideal é consultar o repositório de benchmark para ver a metodologia, as tabelas completas e as bibliotecas incluídas na comparação.
 
 ### Como o desempenho é alcançado
 
-- A normalização percorre a entrada em uma única passada por `charCode`, sem regex no caminho quente. Entrada já normalizada (só dígitos, ou só maiúsculas e dígitos no CNPJ) é devolvida como está, sem alocação.
-- `isValid` valida a string normalizada diretamente, sem criar instâncias de `Identifier` nem objetos intermediários.
-- As checagens rodam da mais barata para a mais cara: tamanho, depois caracteres repetidos, depois dígitos verificadores.
+- `isValid` valida entrada canônica (dígitos, letras no CNPJ e máscara nas posições padrão) em uma única passada sobre a string original: os dois somatórios de dígito verificador, o tamanho e a regra de caracteres repetidos são computados juntos, pulando os símbolos de máscara no lugar, sem regex, sem criar instâncias de `Identifier` e sem alocar uma cópia normalizada.
+- Entrada fora do formato canônico (espaços, separadores deslocados, letras no CPF) mantém o contrato leniente: a normalização remove o que não pertence ao documento e o mesmo validador de passada única decide sobre o valor normalizado.
+- A normalização percorre a entrada por `charCode`, sem regex no caminho quente. Entrada já normalizada é devolvida como está, sem alocação.
 - Nenhum teste de padrão por regex é necessário: como os dígitos verificadores calculados estão sempre entre 0 e 9, uma letra nas duas últimas posições nunca confere.
 - `parse` retorna objetos com chaves literais, mantendo formas monomórficas para o motor JavaScript.
 - Entrada com caracteres não ASCII cai em um caminho de compatibilidade que preserva a semântica Unicode de `toUpperCase`.
 
 ### Como as mudanças de desempenho são verificadas
 
-Toda mudança no caminho quente é comparada contra a branch `main` usando os mesmos datasets e a mesma configuração do repositório de benchmark, executando nas duas ordens de variante para descartar viés de ordem. Antes de medir, um passo de equivalência confirma que `isValid`, `format` e `parse` retornam resultados idênticos nas duas versões para todos os valores dos cenários.
+Toda mudança no caminho quente é comparada contra a branch `main` usando os mesmos datasets e a mesma configuração do repositório de benchmark, executando nas duas ordens de variante para descartar viés de ordem. Antes de medir, um fuzz diferencial com dezenas de milhares de entradas (documentos válidos, mascarados, mutados, truncados e lixo aleatório) confirma que `isValid` e `parse` retornam resultados idênticos aos da implementação anterior.
+
+## Testes
+
+- 94 testes unitários cobrem validação, formatação progressiva, análise, CLI e o contrato de entrada leniente, com 100% de cobertura de statements.
+- O repositório de benchmark também roda uma [matriz de compatibilidade](https://github.com/alisterlf/br-helpers-benchmark#testes-de-compatibilidade) com 54 casos portados dos specs deste pacote contra as bibliotecas populares do npm. Na execução de 11/08/2026, o `br-helpers` foi o único pacote a passar em todos os casos, incluindo CNPJ alfanumérico e entrada leniente.
+- O contrato leniente é coberto por spec: espaços em volta ou entre os caracteres, separadores deslocados ou duplicados, letras misturadas a um CPF válido, caracteres não ASCII e entrada numérica (`Cpf.isValid(13768663663)`) validam como o valor normalizado.
 
 ## O que o pacote oferece
 
