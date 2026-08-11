@@ -1,13 +1,5 @@
 export type MaskSlot = [position: number, symbol: string];
 
-function isDigitCode(code: number): boolean {
-  return code >= 48 && code <= 57;
-}
-
-function isUppercaseAlphanumericCode(code: number): boolean {
-  return isDigitCode(code) || (code >= 65 && code <= 90);
-}
-
 export abstract class Identifier {
   readonly value: string;
 
@@ -53,6 +45,14 @@ export abstract class Identifier {
 
     return String(input);
   }
+
+  protected static isDigitCode(code: number): boolean {
+    return code >= 48 && code <= 57;
+  }
+
+  protected static isUppercaseAlphanumericCode(code: number): boolean {
+    return this.isDigitCode(code) || (code >= 65 && code <= 90);
+  }
 }
 
 export class AlphanumericIdentifier extends Identifier {
@@ -69,7 +69,7 @@ export class AlphanumericIdentifier extends Identifier {
     const length = text.length;
     let idx = 0;
 
-    while (idx < length && isUppercaseAlphanumericCode(text.charCodeAt(idx))) {
+    while (idx < length && this.isUppercaseAlphanumericCode(text.charCodeAt(idx))) {
       idx += 1;
     }
 
@@ -81,7 +81,7 @@ export class AlphanumericIdentifier extends Identifier {
     for (; idx < length; idx += 1) {
       const code = text.charCodeAt(idx);
 
-      if (isUppercaseAlphanumericCode(code)) {
+      if (this.isUppercaseAlphanumericCode(code)) {
         result += text[idx];
       } else if (code >= 97 && code <= 122) {
         result += String.fromCharCode(code - 32);
@@ -108,7 +108,7 @@ export class NumericIdentifier extends Identifier {
     const length = text.length;
     let idx = 0;
 
-    while (idx < length && isDigitCode(text.charCodeAt(idx))) {
+    while (idx < length && this.isDigitCode(text.charCodeAt(idx))) {
       idx += 1;
     }
 
@@ -118,7 +118,7 @@ export class NumericIdentifier extends Identifier {
 
     let result = text.slice(0, idx);
     for (; idx < length; idx += 1) {
-      if (isDigitCode(text.charCodeAt(idx))) {
+      if (this.isDigitCode(text.charCodeAt(idx))) {
         result += text[idx];
       }
     }
